@@ -17,12 +17,12 @@ using Vamp::Plugin;
 
 /**
  * @brief The VampHost class
- * loads and run the specified Vamp Plugin
+ * loads and runs the specified Vamp Plugin
  */
-class VampHost
+class RealTimeVampHost
 {
 public:
-    VampHost(QString libraryName, QString pluginId, float inputSampleRate, QString output, int outputNo, bool useFrames);
+    RealTimeVampHost(QString libraryName, QString pluginId, float inputSampleRate, QString output, int outputNo, bool useFrames);
 
     /**
      * @brief process
@@ -41,7 +41,7 @@ public:
      */
     void *finish();
 
-    virtual ~VampHost();
+    virtual ~RealTimeVampHost();
 
 protected:
     void initialisePlugin();

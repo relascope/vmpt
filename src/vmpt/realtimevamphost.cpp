@@ -1,4 +1,4 @@
-#include "vamphost.h"
+#include "realtimevamphost.h"
 
 #include <signal.h>
 #include <QDebug>
@@ -8,9 +8,8 @@
 #include <vamp-hostsdk/PluginLoader.h>
 
 using Vamp::HostExt::PluginLoader;
-using Vamp::HostExt::PluginWrapper;
 
-VampHost::VampHost(QString libraryName, QString pluginId, float inputSampleRate,
+RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, float inputSampleRate,
                    QString output, int outputNo, bool useFrames) :
     m_libraryName(libraryName),
     m_pluginId(pluginId),
@@ -28,12 +27,12 @@ VampHost::VampHost(QString libraryName, QString pluginId, float inputSampleRate,
     initialisePlugin();
 }
 
-void *VampHost::finish()
+void *RealTimeVampHost::finish()
 {
     return 0;
 }
 
-void VampHost::initialisePlugin()
+void RealTimeVampHost::initialisePlugin()
 {
     PluginLoader *loader = PluginLoader::getInstance();
     PluginLoader::PluginKey key =
@@ -53,7 +52,7 @@ void VampHost::initialisePlugin()
     }
 }
 
-VampHost::~VampHost()
+RealTimeVampHost::~RealTimeVampHost()
 {
     if (m_plugin)
         delete m_plugin;

@@ -18,7 +18,7 @@ TEMPLATE = app
 LIBS += -lvamp-hostsdk
 
 SOURCES += main.cpp \
-    vamphost.cpp
+    realtimevamphost.cpp
 
 HEADERS += \
-    vamphost.h
+    realtimevamphost.h
