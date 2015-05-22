@@ -15,4 +15,10 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+LIBS += -lvamp-hostsdk
+
+SOURCES += main.cpp \
+    vamphost.cpp
+
+HEADERS += \
+    vamphost.h
