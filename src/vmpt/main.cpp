@@ -2,13 +2,13 @@
 
 #include <QDebug>
 
-#include <vamphost.h>
+#include <realtimevamphost.h>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    VampHost *myHost = new VampHost("pyin", "pyin", 1000, 0, 0, false);
+    RealTimeVampHost *myHost = new RealTimeVampHost("pyin", "pyin", 1000, 0, 0, false);
     myHost->finish();
     delete myHost;
 
