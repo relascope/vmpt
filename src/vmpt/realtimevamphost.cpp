@@ -56,10 +56,6 @@ void RealTimeVampHost::initialisePlugin()
     {
         throw "Plugin loading failed";
     }
-    else
-    {
-        qDebug() << QString("Plugin %1 loaded successfully... ").arg(m_pluginId);
-    }
 
     m_blockSize = m_plugin->getPreferredBlockSize();
     m_stepSize = m_plugin->getPreferredStepSize();
@@ -129,6 +125,8 @@ void RealTimeVampHost::initialisePlugin()
             m_timestampAdjustment = ida->getTimestampAdjustment();
         }
     }
+
+    qDebug() << QString("Plugin %1 loaded and initialised successfully... ").arg(m_pluginId);
 }
 
 RealTimeVampHost::~RealTimeVampHost()
