@@ -19,6 +19,8 @@ TEMPLATE = app
 
 LIBS += -lvamp-hostsdk
 
+LIBS += -lsndfile
+
 SOURCES += main.cpp \
     realtimevamphost.cpp
 
