@@ -14,6 +14,7 @@
 using namespace std;
 
 using Vamp::Plugin;
+using Vamp::RealTime;
 
 /**
  * @brief The VampHost class
@@ -22,7 +23,7 @@ using Vamp::Plugin;
 class RealTimeVampHost
 {
 public:
-    RealTimeVampHost(QString libraryName, QString pluginId, float inputSampleRate, QString output, int outputNo, bool useFrames);
+    RealTimeVampHost(QString libraryName, QString pluginId, float inputSampleRate, int channels, QString output, bool useFrames);
 
     /**
      * @brief process
@@ -50,13 +51,21 @@ protected:
     QString m_pluginId;
 
     float m_inputSampleRate;
+    int m_channels;
 
     QString m_output;
 
-    int m_outputNo;
     bool m_useFrames;
 
     Plugin *m_plugin;
+
+    int m_blockSize;
+    int m_stepSize;
+    int m_overlapSize;
+
+    Plugin::OutputDescriptor m_outputDescriptor;
+
+    RealTime m_timestampAdjustment;
 };
 
 #endif // VAMPHOST_H

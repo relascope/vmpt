@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    RealTimeVampHost *myHost = new RealTimeVampHost("pyin", "pyin", 1000, 0, 0, false);
+    RealTimeVampHost *myHost = new RealTimeVampHost("pyin", "pyin", 44100, 0, "notes", false);
     myHost->finish();
     delete myHost;
 
