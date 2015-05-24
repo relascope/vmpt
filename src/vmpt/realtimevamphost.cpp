@@ -3,9 +3,6 @@
 #include <signal.h>
 #include <QDebug>
 
-
-#include <string>
-#include <algorithm>
 #include <vamp-hostsdk/PluginLoader.h>
 #include <vamp-hostsdk/PluginInputDomainAdapter.h>
 
@@ -35,14 +32,11 @@ RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, float 
     if (!m_readFloatFunc)
         throw "Set a function, where the host can read float values for audio analysis";
 
+    if (m_channels != 1)
+        throw "Sorry, we have a bug in here. At the time we can only work with one channel audio. ";
+
     initialisePlugin();
 }
-
-void *RealTimeVampHost::finish()
-{
-    return 0;
-}
-
 
 void
 printFeatures(int frame, int sr, int output,
@@ -98,17 +92,6 @@ printFeatures(int frame, int sr, int output,
 
 void *RealTimeVampHost::process()
 {
-    // negotiate over blocks
-    // should we write a pluginBufferingadapter??
-
-    // TRY with buffer of changing size and see if PluginBufferingAdapter works
-    // it is loaded...
-
-    // process exptects blocksize, so we give it to him!
-
-    // buffer has to be remapped to a float buffer...
-
-
     float *readbuf = new float[m_blockSize * m_channels];
     float **plugbuf = new float*[m_channels];
 
@@ -139,8 +122,10 @@ void *RealTimeVampHost::process()
         }
         else
         {
-            memmove(readbuf, readbuf + (m_stepSize * m_channels), m_overlapSize * m_channels * sizeof(float));
-            if ((readCount = m_readFloatFunc(readbuf + (m_overlapSize * m_channels), m_stepSize)) < 0)
+            // TODOJOY step 3 is getting zeros at the beginning... (only if m_channels != 1)
+            memmove(readbuf, readbuf + (m_stepSize * m_channels),
+                    m_overlapSize * m_channels * sizeof(float));
+            if ((readCount = this->m_readFloatFunc(readbuf + (m_overlapSize * m_channels), m_stepSize)) < 0)
             {
                 throw "Error reading block. ";
             }
@@ -148,6 +133,7 @@ void *RealTimeVampHost::process()
             {
                 finalStepsRemaining--;
             }
+
             readCount += m_overlapSize;
         }
 
@@ -178,6 +164,8 @@ void *RealTimeVampHost::process()
         currentStep++;
     } while (finalStepsRemaining > 0);
 
+    qDebug() << "Remaining features...";
+
     RealTime rt = RealTime::frame2RealTime(currentStep * m_stepSize, m_inputSampleRate);
     Plugin::FeatureSet remainingFeatures = m_plugin->getRemainingFeatures();
 
@@ -186,6 +174,7 @@ void *RealTimeVampHost::process()
                   remainingFeatures, m_useFrames);
 
     qDebug() << "Processing done.";
+
     return 0;
 }
 

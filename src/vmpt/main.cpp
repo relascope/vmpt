@@ -11,11 +11,13 @@
 #include <time.h>
 #include <math.h>
 
+#include <debughelper.h>
 
 SNDFILE *sndfile;
-int readFloatSND(float *buffer, int size)
+int64_t readFloatSND(float *buffer, int64_t size)
 {
-    return sf_read_float(sndfile, buffer, size);
+    int64_t ret = sf_read_float(sndfile, buffer, size);
+    return ret;
 }
 
 void processSndFile()
@@ -24,39 +26,26 @@ void processSndFile()
     SF_INFO sfinfo;
     memset(&sfinfo, 0, sizeof(SF_INFO));
 
-    sndfile = sf_open("/home/dojoy/Music/allemeineentlein.wav", SFM_READ, &sfinfo);
+    sndfile = sf_open("/home/dojoy/Music/a1.wav", SFM_READ, &sfinfo);
     if (!sndfile) {
         cerr << ": ERROR: Failed to open input file " << sf_strerror(sndfile) << endl;
         throw "Error loading file ";
     }
 
 
-    RealTimeVampHost *myHost = new RealTimeVampHost("pyin",
-                    "pyin", sfinfo.samplerate, sfinfo.channels, "notes", false,
+    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
+                    "cepstral-pitchtracker", sfinfo.samplerate, sfinfo.channels, "notes", false,
                     readFloatSND);
 
     myHost->process();
-    myHost->finish();
 
     delete myHost;
 
 }
 
-int readFloat(float *buffer, int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        buffer[i] = r;
-    }
-
-    // size adjusting!!! read should read frames or so...
-    return size;
-}
-
 QFile soundFile;
 
-int readFloatFromFile(float *buffer, int size)
+int64_t readFloatFromFile(float *buffer, int64_t size)
 {
     char *cBuffer = new char[size*sizeof(float)/sizeof(char)];
     qint64 bytesRead = soundFile.read(cBuffer, size * sizeof(float)/sizeof(char));
@@ -65,25 +54,30 @@ int readFloatFromFile(float *buffer, int size)
     return bytesRead  * sizeof(char) / sizeof(float);
 }
 
+//#include "debug/macros.h"
+//#include "debug/functions.h"
+
+#include "debughelper.h"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
     srand(time(NULL));
 
-//    soundFile.setFileName("/home/dojoy/Music/allemeineentleinGuitar.wav");
-//    soundFile.open(QFile::ReadOnly);
+    soundFile.setFileName("/home/dojoy/Music/a1.wav");
+    soundFile.open(QFile::ReadOnly);
 
-//    RealTimeVampHost *myHost = new RealTimeVampHost("pyin",
-//                    "pyin", 44100, 2, "notes", false,
-//                    readFloatFromFile);
+    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
+                    "cepstral-pitchtracker", 44100, 1, "notes", false,
+                    readFloatFromFile);
 
-//    myHost->process();
-//    myHost->finish();
 
-//    delete myHost;
+    myHost->process();
 
-     works...
+    delete myHost;
+
+     //works... (with one channel)
     processSndFile();
 
     return a.exec();

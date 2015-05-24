@@ -16,7 +16,7 @@ using namespace std;
 using Vamp::Plugin;
 using Vamp::RealTime;
 
-typedef int (*cbReadFloat)(float*,int);
+typedef int64_t (*cbReadFloat)(float*,int64_t);
 
 /**
  * @brief The VampHost class
@@ -38,14 +38,6 @@ public:
      * @return
      */
     void* process();
-
-    /**
-     * @brief finish
-     * tells the VampHost to finish the processing
-     * and get Remaining Features from the plugin
-     * @return
-     */
-    void *finish();
 
     virtual ~RealTimeVampHost();
 

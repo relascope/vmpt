@@ -8,6 +8,9 @@ QT       += core
 
 QT       -= gui
 
+# comment if ccache is not installed
+QMAKE_CXX = ccache g++
+
 TARGET = vmpt
 CONFIG   += console
 CONFIG   -= app_bundle
@@ -25,4 +28,5 @@ SOURCES += main.cpp \
     realtimevamphost.cpp
 
 HEADERS += \
-    realtimevamphost.h
+    realtimevamphost.h \
+    debughelper.h
