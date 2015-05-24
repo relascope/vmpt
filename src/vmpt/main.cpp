@@ -6,42 +6,15 @@
 #include <QFile>
 
 #include <realtimevamphost.h>
+#include "filetoscore.h"
 
-#include <sndfile.h>
 #include <time.h>
 #include <math.h>
 
 #include <debughelper.h>
 
-SNDFILE *sndfile;
-int64_t readFloatSND(float *buffer, int64_t size)
-{
-    int64_t ret = sf_read_float(sndfile, buffer, size);
-    return ret;
-}
 
-void processSndFile()
-{
-
-    SF_INFO sfinfo;
-    memset(&sfinfo, 0, sizeof(SF_INFO));
-
-    sndfile = sf_open("/home/dojoy/Music/a1.wav", SFM_READ, &sfinfo);
-    if (!sndfile) {
-        cerr << ": ERROR: Failed to open input file " << sf_strerror(sndfile) << endl;
-        throw "Error loading file ";
-    }
-
-
-    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
-                    "cepstral-pitchtracker", sfinfo.samplerate, sfinfo.channels, "notes", false,
-                    readFloatSND);
-
-    myHost->process();
-
-    delete myHost;
-
-}
+#include <QtMath>
 
 QFile soundFile;
 
@@ -51,34 +24,78 @@ int64_t readFloatFromFile(float *buffer, int64_t size)
     qint64 bytesRead = soundFile.read(cBuffer, size * sizeof(float)/sizeof(char));
     memcpy(buffer, cBuffer, bytesRead);
 
+    throw "reads shit";
+
     return bytesRead  * sizeof(char) / sizeof(float);
 }
 
-//#include "debug/macros.h"
-//#include "debug/functions.h"
+int wavheadersize(QString fileName){
 
-#include "debughelper.h"
+    char b[4];
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
 
-int main(int argc, char *argv[])
+    file.seek(16);
+
+    file.read(b, 4);
+    file.close();
+
+    // little endian
+//    int Subchunk1Size2 = (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | (b[3]);
+            // big endian??
+    int Subchunk1Size = (b[3] << 24) | (b[2] << 16) | (b[1] << 8) | (b[0]);
+
+    if (Subchunk1Size < 16)
+        throw "no valid wav file";
+    else
+    {
+        switch (Subchunk1Size)
+        {
+        case 16:
+            return 44;
+        case 18:
+            return 46;
+        default:
+            throw "Header contains extra data and is larger than 46 bytes";
+            break;
+        }
+    }
+
+    ASSERT(false)
+
+    return 0;
+}
+
+void readWavDirect()
 {
-    QCoreApplication a(argc, argv);
+//    soundFile.setFileName("/home/dojoy/Music/a1.wav");
 
-    srand(time(NULL));
+    QString fileName = "/home/dojoy/Music/cats1.wav";
 
-    soundFile.setFileName("/home/dojoy/Music/a1.wav");
+    int wavHeaderInBytes = wavheadersize(fileName);
+
+    soundFile.setFileName(fileName);
     soundFile.open(QFile::ReadOnly);
+
+    soundFile.read(wavHeaderInBytes); // read header to not be mixed with our data ;-)
 
     RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
                     "cepstral-pitchtracker", 44100, 1, "notes", false,
                     readFloatFromFile);
 
-
     myHost->process();
-
     delete myHost;
 
-     //works... (with one channel)
-    processSndFile();
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+//    readWavDirect();
+
+    FileToScore().processSndFile("/home/dojoy/Music/cats1.wav", "/tmp/cats.xml");
+
 
     return a.exec();
 }

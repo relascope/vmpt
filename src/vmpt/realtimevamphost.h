@@ -11,12 +11,22 @@
 
 #include <vamp-hostsdk/PluginLoader.h>
 
+#include <functional>
+
 using namespace std;
 
 using Vamp::Plugin;
 using Vamp::RealTime;
 
-typedef int64_t (*cbReadFloat)(float*,int64_t);
+//typedef int64_t (*cbReadFloat)(float*,int64_t);
+
+using namespace std::placeholders;
+typedef std::function<int64_t(float*,int64_t)> cbReadFloat;
+
+// TODOJOY Qt Signal/Slot?
+//typedef void (*cbFeaturesAvailable)(Plugin::FeatureList* features);
+
+typedef std::function<void(Plugin::FeatureList* features)> cbFeaturesAvailable;
 
 /**
  * @brief The VampHost class
@@ -40,6 +50,8 @@ public:
     void* process();
 
     virtual ~RealTimeVampHost();
+
+    cbFeaturesAvailable featuresAvailable;
 
 protected:
     void initialisePlugin();

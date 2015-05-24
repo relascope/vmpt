@@ -22,11 +22,19 @@ TEMPLATE = app
 
 LIBS += -lvamp-hostsdk
 
+LIBS += -lmusicxml2
+
 LIBS += -lsndfile
 
 SOURCES += main.cpp \
-    realtimevamphost.cpp
+    realtimevamphost.cpp \
+    mxmlwriter.cpp \
+    filetoscore.cpp \
+    transcribehelper.cpp
 
 HEADERS += \
     realtimevamphost.h \
-    debughelper.h
+    debughelper.h \
+    mxmlwriter.h \
+    filetoscore.h \
+    transcribehelper.h

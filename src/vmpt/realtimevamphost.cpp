@@ -158,8 +158,13 @@ void *RealTimeVampHost::process()
         RealTime rt = RealTime::frame2RealTime(currentStep * m_stepSize, m_inputSampleRate);
         Plugin::FeatureSet features = m_plugin->process(plugbuf, rt);
 
-        printFeatures(RealTime::realTime2Frame(rt + m_timestampAdjustment, m_inputSampleRate),
-                      m_inputSampleRate, m_outputNo, features, m_useFrames);
+        if (features[m_outputNo].size() > 0)
+        {
+            if (featuresAvailable)
+                featuresAvailable(&features[m_outputNo]);
+            printFeatures(RealTime::realTime2Frame(rt + m_timestampAdjustment, m_inputSampleRate),
+                          m_inputSampleRate, m_outputNo, features, m_useFrames);
+        }
 
         currentStep++;
     } while (finalStepsRemaining > 0);
@@ -169,9 +174,15 @@ void *RealTimeVampHost::process()
     RealTime rt = RealTime::frame2RealTime(currentStep * m_stepSize, m_inputSampleRate);
     Plugin::FeatureSet remainingFeatures = m_plugin->getRemainingFeatures();
 
-    printFeatures(RealTime::realTime2Frame(rt + m_timestampAdjustment, m_inputSampleRate),
+    if (remainingFeatures[m_outputNo].size() > 0)
+    {
+        if (featuresAvailable)
+            featuresAvailable(&remainingFeatures[m_outputNo]);
+
+        printFeatures(RealTime::realTime2Frame(rt + m_timestampAdjustment, m_inputSampleRate),
                   m_inputSampleRate, m_outputNo,
                   remainingFeatures, m_useFrames);
+    }
 
     qDebug() << "Processing done.";
 
@@ -269,3 +280,4 @@ RealTimeVampHost::~RealTimeVampHost()
     if (m_plugin)
         delete m_plugin;
 }
+

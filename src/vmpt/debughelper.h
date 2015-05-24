@@ -1,6 +1,11 @@
 #ifndef DEBUGHELPER_H
 #define DEBUGHELPER_H
 
+// TODOJOY works only on linux!!!
+#include <signal.h>
+#define ASSERT(TEST) if(!(TEST)) raise(SIGSTOP);
+
+
 #include <QFile>
 #include <QFileInfo>
 #include <QDateTime>
