@@ -6,7 +6,7 @@
 
 #include "realtimevamphost.h"
 
-class FileToScore
+class FileToScore : ReadInterface
 {
 public:
     FileToScore();
@@ -22,8 +22,12 @@ private:
     void printNote(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
 
 private:
-    SNDFILE *sndfile;
+    SNDFILE *m_sndfile;
     MXMLWriter *outputxml;
+
+    // ReadInterface interface
+public:
+    int ReadFloat(float *buffer, int size) { readFloatSND(buffer, size); }
 };
 
 #endif // FILETOSCORE_H

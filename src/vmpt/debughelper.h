@@ -11,6 +11,29 @@
 #include <QDateTime>
 #include <QCoreApplication>
 
+
+#include <sndfile.h>
+class reader
+{
+public:
+    reader() {opensnd();}
+
+//    static int stat(float* buffer, int size)
+
+//    {
+//        return sf_readf_float(sndfiletmp, buffer, size);
+//    }
+
+    int nonstat(float* buffer, int size);
+
+
+    SNDFILE *m_sndfiletmp;
+
+    void opensnd();
+};
+
+
+
 class DebugHelper
 {
 public:

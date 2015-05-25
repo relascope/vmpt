@@ -28,6 +28,12 @@ typedef std::function<int(float*,int)> cbReadFloat;
 
 typedef std::function<void(Plugin::FeatureList* features)> cbFeaturesAvailable;
 
+class ReadInterface
+{
+public:
+    virtual int ReadFloat(float* buffer, int size) = 0;
+};
+
 /**
  * @brief The VampHost class
  * loads and runs the specified Vamp Plugin
@@ -52,6 +58,8 @@ public:
     virtual ~RealTimeVampHost();
 
     cbFeaturesAvailable featuresAvailable;
+
+    ReadInterface *m_reader;
 
 protected:
     void initialisePlugin();

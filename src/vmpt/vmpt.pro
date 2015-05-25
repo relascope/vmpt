@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     realtimevamphost.cpp \
     mxmlwriter.cpp \
     filetoscore.cpp \
-    transcribehelper.cpp
+    transcribehelper.cpp \
+    debughelper.cpp
 
 HEADERS += \
     realtimevamphost.h \

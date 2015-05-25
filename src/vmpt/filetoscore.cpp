@@ -11,7 +11,8 @@ FileToScore::FileToScore()
 
 FileToScore::~FileToScore()
 {
-
+    if (m_sndfile)
+        sf_close(m_sndfile);
 }
 
 void FileToScore::processSndFile(QString soundFileInput, QString mxmlFileOutput)
@@ -21,9 +22,9 @@ void FileToScore::processSndFile(QString soundFileInput, QString mxmlFileOutput)
     SF_INFO sfinfo;
     memset(&sfinfo, 0, sizeof(SF_INFO));
 
-    sndfile = sf_open(soundFileInput.toStdString().c_str(), SFM_READ, &sfinfo);
-    if (!sndfile) {
-        cerr << ": ERROR: Failed to open input file " << sf_strerror(sndfile) << endl;
+    m_sndfile = sf_open(soundFileInput.toStdString().c_str(), SFM_READ, &sfinfo);
+    if (!m_sndfile) {
+        cerr << ": ERROR: Failed to open input file " << sf_strerror(m_sndfile) << endl;
         throw "Error loading file ";
     }
 
@@ -33,8 +34,11 @@ void FileToScore::processSndFile(QString soundFileInput, QString mxmlFileOutput)
                     "cepstral-pitchtracker", sfinfo.samplerate, sfinfo.channels, "notes", false,
         fp);
 
+    myHost->m_reader = this;
+
     auto fp2 = std::bind(&FileToScore::printFeatures, this, _1);
     myHost->featuresAvailable = fp2;
+
 
     myHost->process();
 
@@ -47,7 +51,7 @@ void FileToScore::processSndFile(QString soundFileInput, QString mxmlFileOutput)
 
 int FileToScore::readFloatSND(float *buffer, int size)
 {
-    return sf_read_float(sndfile, buffer, size);
+    return sf_read_float(m_sndfile, buffer, size);
 }
 
 #define DIVISION_PER_QUARTER 16

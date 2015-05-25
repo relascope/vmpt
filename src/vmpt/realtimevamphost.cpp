@@ -100,6 +100,38 @@ printFeatures(int frame, int sr, int output,
     }
 }
 
+#ifdef READLOCAL
+
+#else
+SNDFILE *sndfiletmp;
+void opensnd()
+{
+    SF_INFO sfinfo;
+    memset(&sfinfo, 0, sizeof(SF_INFO));
+
+    sndfiletmp = sf_open("/home/dojoy/vmpt/audio/fini.wav", SFM_READ, &sfinfo);
+    if (!sndfiletmp) {
+        cerr << ": ERROR: Failed to open input file " << sf_strerror(sndfiletmp) << endl;
+        throw "Error loading file ";
+    }
+}
+
+
+int readfromsnd2(float* buffer, int size)
+
+{
+    return sf_readf_float(sndfiletmp, buffer, size);
+}
+int readfromsnd1(float* buffer, int size)
+{
+    return readfromsnd2(buffer, size);
+}
+int readfromsnd(float* buffer, int size)
+{
+    return readfromsnd1(buffer, size);
+}
+#endif
+
 int RealTimeVampHost::runPlugin()
 {
     string myname = "hello";
@@ -111,7 +143,8 @@ int RealTimeVampHost::runPlugin()
 
     int channels = m_channels;
 
-#define READLOCAL
+//#define READLOCAL
+//#define FP
 
 #ifdef READLOCAL
 
@@ -124,6 +157,16 @@ int RealTimeVampHost::runPlugin()
         cerr << ": ERROR: Failed to open input file " << sf_strerror(sndfile) << endl;
         throw "Error loading file ";
     }
+#elif defined(FP)
+#else
+    opensnd();
+//    this->m_readFloatFunc = &reader::stat;
+
+    reader obj;
+
+    auto fp = std::bind(&reader::nonstat, &obj, _1, _2);
+
+        this->m_readFloatFunc = fp;
 #endif
 
 
@@ -164,8 +207,10 @@ int RealTimeVampHost::runPlugin()
             // read a full fresh block
 #ifdef READLOCAL
             if ((count = sf_readf_float(sndfile, filebuf, m_blockSize)) < 0) {
+#elif defined(FP)
+            if ((count = m_reader->ReadFloat(filebuf, m_blockSize)) < 0) {
 #else
-            if ((count = this->m_readFloatFunc(filebuf, m_blockSize)) < 0) {
+            if ((count = this->m_readFloatFunc(filebuf + (overlapSize * channels), m_stepSize)) < 0) {
 #endif
 //                cerr << "ERROR: sf_readf_float failed: " << sf_strerror(sndfile) << endl;
                 throw "Read Error";
@@ -178,6 +223,8 @@ int RealTimeVampHost::runPlugin()
                     overlapSize * channels * sizeof(float));
 #ifdef READLOCAL
             if ((count = sf_readf_float(sndfile, filebuf + (overlapSize * channels), m_stepSize)) < 0) {
+#elif defined(FP)
+            if ((count = m_reader->ReadFloat(filebuf + (overlapSize * channels), m_stepSize)) < 0) {
 #else
             if ((count = this->m_readFloatFunc(filebuf + (overlapSize * channels), m_stepSize)) < 0) {
 #endif
