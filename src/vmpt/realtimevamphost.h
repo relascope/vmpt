@@ -7,32 +7,21 @@
 #ifndef VAMPHOST_H
 #define VAMPHOST_H
 
+#include <functional>
+
 #include <QString>
 
 #include <vamp-hostsdk/PluginLoader.h>
 
-#include <functional>
-
-using namespace std;
+#include "readfloatinterface.h"
+#include "debughelper.h"
 
 using Vamp::Plugin;
 using Vamp::RealTime;
 
-//typedef int64_t (*cbReadFloat)(float*,int64_t);
-
 using namespace std::placeholders;
-typedef std::function<int(float*,int)> cbReadFloat;
-
-// TODOJOY Qt Signal/Slot?
-//typedef void (*cbFeaturesAvailable)(Plugin::FeatureList* features);
 
 typedef std::function<void(Plugin::FeatureList* features)> cbFeaturesAvailable;
-
-class ReadInterface
-{
-public:
-    virtual int ReadFloat(float* buffer, int size) = 0;
-};
 
 /**
  * @brief The VampHost class
@@ -40,26 +29,26 @@ public:
  */
 class RealTimeVampHost
 {
+    // TODOJOY eventually refactor /output to a new constructor
+    // or property
+    // TODOJOY useFrames default to false and a setter.
 public:
     RealTimeVampHost(QString libraryName, QString pluginId,
                      float inputSampleRate, int channels,
                      QString output, bool useFrames,
-                     cbReadFloat readFloatFunc);
+                     ReadFloatInterface& reader);
+    virtual ~RealTimeVampHost();
 
     /**
      * @brief process
-     * processes the buffer with the vamp Plugin and returns the results
-     * @param buffer
-     * @param size
-     * @return
+     * processes the data read from the given reader
+     * and gives the results to the featuresAvailable callback
      */
-    void* process();
-
-    virtual ~RealTimeVampHost();
+    void process();
 
     cbFeaturesAvailable featuresAvailable;
 
-    ReadInterface *m_reader;
+    ReadFloatInterface& m_reader;
 
 protected:
     void initialisePlugin();
@@ -74,8 +63,7 @@ protected:
 
     bool m_useFrames;
 
-    cbReadFloat m_readFloatFunc;
-
+private:
     Plugin *m_plugin;
 
     int m_blockSize;
@@ -85,8 +73,15 @@ protected:
     int m_outputNo;
 
     RealTime m_timestampAdjustment;
+
 private:
-    int runPlugin();
+    /**
+      * Ported from vamp-hostsdk host example
+      *
+      * */
+    DEPRECATED int runPlugin();
+    DEPRECATED void printFeatures(int frame, int sr, int output,
+                  Plugin::FeatureSet features, bool useFrames);
 
 };
 

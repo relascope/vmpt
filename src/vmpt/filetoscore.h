@@ -1,33 +1,28 @@
 #ifndef FILETOSCORE_H
 #define FILETOSCORE_H
 
-#include <sndfile.h>
 #include <mxmlwriter.h>
 
-#include "realtimevamphost.h"
+#include <vamp-hostsdk/RealTime.h>
+#include <vamp-hostsdk/Plugin.h>
 
-class FileToScore : ReadInterface
+using Vamp::Plugin;
+
+class SoundFile
 {
 public:
-    FileToScore();
-    virtual ~FileToScore();
+    SoundFile(QString soundFileInput);
+    virtual ~SoundFile();
 
-    void processSndFile(QString soundFileInput, QString mxmlFileOutput);
-
-private:
-    int readFloatSND(float *buffer, int size);
-
-    void printFeatures(Plugin::FeatureList *features);
-
-    void printNote(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
+    void toMusicXML(QString mxmlFileOutput);
 
 private:
-    SNDFILE *m_sndfile;
-    MXMLWriter *outputxml;
+    void collectFeatures(Plugin::FeatureList *features);
+    void writeNoteToScore(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
 
-    // ReadInterface interface
-public:
-    int ReadFloat(float *buffer, int size) { readFloatSND(buffer, size); }
+private:
+    QString m_soundFileInput;
+    MXMLWriter *m_outputxml;
 };
 
 #endif // FILETOSCORE_H

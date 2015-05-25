@@ -31,11 +31,14 @@ SOURCES += main.cpp \
     mxmlwriter.cpp \
     filetoscore.cpp \
     transcribehelper.cpp \
-    debughelper.cpp
+    debughelper.cpp \
+    audiofilereader.cpp
 
 HEADERS += \
     realtimevamphost.h \
     debughelper.h \
     mxmlwriter.h \
     filetoscore.h \
-    transcribehelper.h
+    transcribehelper.h \
+    audiofilereader.h \
+    readfloatinterface.h

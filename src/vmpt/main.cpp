@@ -4,6 +4,7 @@
 
 
 #include <QFile>
+#include <QDir>
 
 #include <realtimevamphost.h>
 #include "filetoscore.h"
@@ -79,12 +80,12 @@ void readWavDirect()
 
     soundFile.read(wavHeaderInBytes); // read header to not be mixed with our data ;-)
 
-    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
-                    "cepstral-pitchtracker", 44100, 1, "notes", false,
-                    readFloatFromFile);
+//    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
+//                    "cepstral-pitchtracker", 44100, 1, "notes", false,
+//                    readFloatFromFile);
 
-    myHost->process();
-    delete myHost;
+//    myHost->process();
+//    delete myHost;
 
 }
 
@@ -92,9 +93,43 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-//    readWavDirect();
 
-    FileToScore().processSndFile("/home/dojoy/vmpt/audio/fini.wav", "/tmp/fini.xml");
+    QDir appDir = QDir(a.applicationDirPath());
+    appDir.cdUp();
+    appDir.cdUp();
+    appDir.cd("audio");
+    QString file1 = appDir.absoluteFilePath("fini1.wav");
+    QString file2 = appDir.absoluteFilePath("fini.wav");
+
+    qDebug() << "read file with ONE channel ... ";
+    SoundFile(file1).toMusicXML("/tmp/fini1.xml");
+
+    qDebug() << "read file with TWO channels ... ";
+    SoundFile(file2).toMusicXML("/tmp/fini2.xml");
+
+
+    // TODOJOY ASSERT ARE IDENTICAL!!!
+    // MOVE TO TEST
+
+    QFile f1("/tmp/fini1.xml");
+    QFile f2("/tmp/fini2.xml");
+
+
+    f1.open(QIODevice::ReadOnly);
+    f2.open(QIODevice::ReadOnly);
+
+    QByteArray bytes1 = f1.readAll();
+    QByteArray bytes2 = f2.readAll();
+
+    ASSERT(bytes1.size() == bytes2.size())
+
+    for (qint64 i = 0; i < bytes1.size(); i++)
+    {
+        if (bytes1.at(i) != bytes2.at(i))
+            throw "MusicXML not equivalent for different channels ";
+    }
+
+    qDebug() << "test succeeded! ";
 
 
     return a.exec();

@@ -1,62 +1,60 @@
 #include "filetoscore.h"
 
+#include "audiofilereader.h"
+#include "realtimevamphost.h"
 #include "transcribehelper.h"
 
-#include "debughelper.h"
-
-FileToScore::FileToScore()
+SoundFile::SoundFile(QString soundFileInput) :
+    m_soundFileInput(soundFileInput)
 {
-
 }
 
-FileToScore::~FileToScore()
+void SoundFile::toMusicXML(QString mxmlFileOutput)
 {
-    if (m_sndfile)
-        sf_close(m_sndfile);
+    m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
+
+    AudioFileReader fileReader(m_soundFileInput.toStdString());
+    SF_INFO fileInfo = fileReader.opensnd();
+
+    // TODOJOY get Plugin info from ?? Settings Class/File
+    RealTimeVampHost vampHost("cepstral-pitchtracker",
+                    "cepstral-pitchtracker", fileInfo.samplerate, fileInfo.channels, "notes", false,
+        fileReader);
+
+//    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
+    vampHost.process();
+
+    m_outputxml->finish();
+
+    delete m_outputxml;
+    m_outputxml = 0;
 }
 
-void FileToScore::processSndFile(QString soundFileInput, QString mxmlFileOutput)
+void SoundFile::collectFeatures(Plugin::FeatureList *features)
 {
-    outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
+    for (Plugin::Feature feature : *features)
+    {
+        std::cout << std::endl;
+        for (float val : feature.values)
+        {
+            writeNoteToScore(val, feature.duration, feature.timestamp);
 
-    SF_INFO sfinfo;
-    memset(&sfinfo, 0, sizeof(SF_INFO));
-
-    m_sndfile = sf_open(soundFileInput.toStdString().c_str(), SFM_READ, &sfinfo);
-    if (!m_sndfile) {
-        cerr << ": ERROR: Failed to open input file " << sf_strerror(m_sndfile) << endl;
-        throw "Error loading file ";
+            std::cout << val << " ";
+        }
+        if (feature.values.size() > 0)
+            std::cout << std::endl;
     }
-
-    auto fp = std::bind(&FileToScore::readFloatSND, this, _1, _2);
-
-    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
-                    "cepstral-pitchtracker", sfinfo.samplerate, sfinfo.channels, "notes", false,
-        fp);
-
-    myHost->m_reader = this;
-
-    auto fp2 = std::bind(&FileToScore::printFeatures, this, _1);
-    myHost->featuresAvailable = fp2;
-
-
-    myHost->process();
-
-    outputxml->finish();
-
-    delete outputxml;
-    delete myHost;
-
 }
 
-int FileToScore::readFloatSND(float *buffer, int size)
+SoundFile::~SoundFile()
 {
-    return sf_read_float(m_sndfile, buffer, size);
+    if (m_outputxml)
+        delete m_outputxml;
 }
 
 #define DIVISION_PER_QUARTER 16
 
-void FileToScore::printNote(float val, RealTime duration, RealTime timestamp)
+void SoundFile::writeNoteToScore(float val, RealTime duration, RealTime timestamp)
 {
     float bpm = 130;
 
@@ -110,21 +108,7 @@ void FileToScore::printNote(float val, RealTime duration, RealTime timestamp)
 
     QString note = TranscribeHelper().getNoteFromFreq(val);
 
-    outputxml->addNote(note, 4, DIVISION_PER_QUARTER);
+    m_outputxml->addNote(note, 4, DIVISION_PER_QUARTER);
 }
 
-void FileToScore::printFeatures(Plugin::FeatureList *features)
-{
-    for (Plugin::Feature feature : *features)
-    {
-        for (float val : feature.values)
-        {
-            printNote(val, feature.duration, feature.timestamp);
-
-            cout << val << " ";
-        }
-        if (features->size() > 0)
-            cout << endl;
-    }
-}
 

@@ -1,6 +1,16 @@
 #ifndef DEBUGHELPER_H
 #define DEBUGHELPER_H
 
+
+#ifdef __GNUC__
+#define DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define DEPRECATED __declspec(deprecated)
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED
+#endif
+
 // TODOJOY works only on linux!!!
 #include <signal.h>
 #define ASSERT(TEST) if(!(TEST)) raise(SIGSTOP);
@@ -10,27 +20,6 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QCoreApplication>
-
-
-#include <sndfile.h>
-class reader
-{
-public:
-    reader() {opensnd();}
-
-//    static int stat(float* buffer, int size)
-
-//    {
-//        return sf_readf_float(sndfiletmp, buffer, size);
-//    }
-
-    int nonstat(float* buffer, int size);
-
-
-    SNDFILE *m_sndfiletmp;
-
-    void opensnd();
-};
 
 
 
