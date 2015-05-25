@@ -20,7 +20,7 @@ QString TranscribeHelper::getNoteName(int roundedLevel)
     QStringList listNotes;
 
 //    listNotes << "a" << "ais" << "b" << "c" << "cis" << "d" << "dis" << "e" << "f" << "fis" << "g" << "gis";
-    listNotes << "a" << "a" << "b" << "c" << "c" << "d" << "d" << "e" << "f" << "f" << "g" << "g";
+    listNotes << "A" << "A" << "B" << "C" << "C" << "D" << "D" << "E" << "F" << "F" << "G" << "G";
 
     int realLevel = roundedLevel % 12;
 

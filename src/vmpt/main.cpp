@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
 //    readWavDirect();
 
-    FileToScore().processSndFile("/home/dojoy/Music/cats1.wav", "/tmp/cats.xml");
+    FileToScore().processSndFile("/home/dojoy/vmpt/audio/fini.wav", "/tmp/fini.xml");
 
 
     return a.exec();

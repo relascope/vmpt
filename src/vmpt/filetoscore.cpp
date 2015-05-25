@@ -45,21 +45,68 @@ void FileToScore::processSndFile(QString soundFileInput, QString mxmlFileOutput)
 
 }
 
-int64_t FileToScore::readFloatSND(float *buffer, int64_t size)
+int FileToScore::readFloatSND(float *buffer, int size)
 {
-    int64_t ret = sf_read_float(sndfile, buffer, size);
-
-    DebugHelper::instance()->printFloatArray(buffer, ret);
-    DebugHelper::instance()->printToFile("\r\n");
-
-    return ret;
+    return sf_read_float(sndfile, buffer, size);
 }
 
-void FileToScore::printNote(float val)
+#define DIVISION_PER_QUARTER 16
+
+void FileToScore::printNote(float val, RealTime duration, RealTime timestamp)
 {
+    float bpm = 130;
+
+    /**
+     * calc...
+     * beats per minute given
+     * duration in seconds given
+     *
+     * Which note?
+     *
+     * BPM = 60
+     * duration = 1 sec
+     * ==> quarter
+     *
+     * duration needed?
+     * 4 is quarter
+     * 2 is eigth
+     *
+     * BPM = 60
+     * duration = 1 sec
+     * ==> 4 (quarter)
+     *
+     * duration = 2 sec
+     * ==> 8 (half)
+     *
+     * duration = 0.5 sec
+     * ==> 2 (eigth)
+     *
+     *
+     * BPM = 120
+     * duration = 1 sec
+     * ==> 8 (half)
+     *
+     * duration = 2 sec
+     * ==> 16 (full)
+     *
+     * duration = 0.5 sec
+     * ==> 4 (quarter)
+     */
+
+    // milli/micro/nano
+    float fmxmlDuration = duration.nsec / (1000.f*1000.f*1000.f)  * DIVISION_PER_QUARTER * bpm / 60.f;
+
+    int mxmlDuration = fmxmlDuration;
+
+    // TODOJOY CHECK why?
+//    if (mxmlDuration == 0)
+//        return;
+
+    // TODOJOY timestamp should be used to generate pause.... => last timestamp+duration needed...
+
     QString note = TranscribeHelper().getNoteFromFreq(val);
 
-    outputxml->addNote(note, 4);
+    outputxml->addNote(note, 4, DIVISION_PER_QUARTER);
 }
 
 void FileToScore::printFeatures(Plugin::FeatureList *features)
@@ -68,7 +115,7 @@ void FileToScore::printFeatures(Plugin::FeatureList *features)
     {
         for (float val : feature.values)
         {
-            printNote(val);
+            printNote(val, feature.duration, feature.timestamp);
 
             cout << val << " ";
         }

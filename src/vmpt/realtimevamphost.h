@@ -21,7 +21,7 @@ using Vamp::RealTime;
 //typedef int64_t (*cbReadFloat)(float*,int64_t);
 
 using namespace std::placeholders;
-typedef std::function<int64_t(float*,int64_t)> cbReadFloat;
+typedef std::function<int(float*,int)> cbReadFloat;
 
 // TODOJOY Qt Signal/Slot?
 //typedef void (*cbFeaturesAvailable)(Plugin::FeatureList* features);
@@ -77,6 +77,9 @@ protected:
     int m_outputNo;
 
     RealTime m_timestampAdjustment;
+private:
+    int runPlugin();
+
 };
 
 #endif // VAMPHOST_H

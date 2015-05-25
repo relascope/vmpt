@@ -18,7 +18,7 @@ public:
     MXMLWriter(QString fileName);
     virtual ~MXMLWriter();
 
-    void addNote(QString step, int octave);
+    void addNote(QString step, int octave, int duration);
     void finish();
 
 private:
@@ -32,6 +32,8 @@ private:
 
     int positionInMeasure = 0;
     int measureCount = 1;
+
+    double measureFill = 0;
 
 };
 

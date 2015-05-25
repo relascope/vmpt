@@ -15,15 +15,11 @@ public:
     void processSndFile(QString soundFileInput, QString mxmlFileOutput);
 
 private:
-    int64_t readFloatSND(float *buffer, int64_t size);
-
-    static int64_t readFloatForwarder(void* context, float *buffer, int64_t size) {
-        return static_cast<FileToScore*>(context)->readFloatSND(buffer, size);
-    }
+    int readFloatSND(float *buffer, int size);
 
     void printFeatures(Plugin::FeatureList *features);
 
-    void printNote(float val);
+    void printNote(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
 
 private:
     SNDFILE *sndfile;

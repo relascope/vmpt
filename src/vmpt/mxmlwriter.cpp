@@ -11,7 +11,7 @@
 using namespace MusicXML2;
 using std::string;
 
-#define kDivision	4
+#define DIVISION_PER_QUARTER	16
 
 //------------------------------------------------------------------------
 // a function that return random numbers in the given range
@@ -69,7 +69,7 @@ static Sxmlelement newElementI(int type, int value)
 //------------------------------------------------------------------------
 static Sxmlelement makeMeasureAttributes() {
     Sxmlelement attributes = factory::instance().create(k_attributes);
-    attributes->push (newElementI(k_divisions, kDivision));
+    attributes->push (newElementI(k_divisions, DIVISION_PER_QUARTER));
 
     Sxmlelement time = factory::instance().create(k_time);
     time->push (newElement(k_beats, "4"));
@@ -104,7 +104,7 @@ static Sxmlelement makemeasure(unsigned long num) {
         pitch->push (newElementI(k_octave, 4 + getrandom(2)));		// sets the octave to a random value
 
         note->push (pitch);											// adds the pitch to the note
-        note->push (newElementI(k_duration, kDivision));				// sets the note duration to a quarter note
+        note->push (newElementI(k_duration, DIVISION_PER_QUARTER));				// sets the note duration to a quarter note
         // TODOJOY is this needed?
 //        note->push (newElement(k_type, "quarter"));					// creates the graphic elements of the note
 
@@ -161,18 +161,11 @@ static Sxmlelement makeIdentification() {
 //------------------------------------------------------------------------
 // the function that creates and writes the score
 //------------------------------------------------------------------------
-static Sxmlelement makeScore(int measuresCount) {
+static Sxmlelement makeScore() {
     Sxmlelement score = factory::instance().create(k_score_partwise);
     score->push (newElement(k_movement_title, "DoJoY VMPT generated music..."));
     score->push (makeIdentification());
     score->push (makePartList());
-
-
-//    Sxmlelement part = makePart(measuresCount);
-
-//    score->push(part);			// adds a part to the score
-
-//    score->push(makePart(measuresCount));
 
     return score;
 }
@@ -186,8 +179,7 @@ MXMLWriter::MXMLWriter(QString fileName) :
     f->set(new TDocType("score-partwise"));
 
 
-//    f->set(makeScore(2));
-    score = makeScore(5);
+    score = makeScore();
 
     part = factory::instance().create(k_part);
     part->add(newAttribute("id", kPartID));
@@ -196,11 +188,17 @@ MXMLWriter::MXMLWriter(QString fileName) :
 }
 
 
-void MXMLWriter::addNote(QString step, int octave)
+void MXMLWriter::addNote(QString step, int octave, int duration)
 {
+    // duration is 4 for quarter, 8 for half...
     // add measures to part...
 
-    if (positionInMeasure == 0)
+
+//    int stepsPerMeasure = 4; // 4 4 per measure => 4 notes duration 4 gives 1 measure, 8 notes duration 8 gives 1 measure,
+
+    // 4 notes duration 8 + 2 notes duration 4 gives 1 measure...
+
+    if ((int)measureFill == 0)
     {
         measure = factory::instance().create(k_measure);
         measure->add(newAttributeI("number", measureCount));
@@ -208,6 +206,7 @@ void MXMLWriter::addNote(QString step, int octave)
         {
             measure->push(makeMeasureAttributes());
         }
+        measureCount++;
     }
 
     Sxmlelement noteElem = factory::instance().create(k_note);
@@ -219,24 +218,27 @@ void MXMLWriter::addNote(QString step, int octave)
     pitch->push(newElementI(k_octave, octave));
 
     noteElem->push(pitch);
-    noteElem->push(newElementI(k_duration, 4));
+    noteElem->push(newElementI(k_duration, duration));
 //            // TODOJOY is this needed?
-    noteElem->push(newElement(k_type, "quarter"));
+//    noteElem->push(newElement(k_type, "quarter"));
 
     measure->push(noteElem);
 
-    positionInMeasure++;
+    measureFill += duration;
 
-    if (positionInMeasure == 4)
+    // TODOJOY CHECK FOR DURATION OF NOTE!!! CAN IT BE ADDED? SPLIT!!
+
+    if ((int)measureFill >= DIVISION_PER_QUARTER  * 4)
     {
         part->push(measure);
-        positionInMeasure = 0;
+//        positionInMeasure = 0;
+        measureFill = 0;
     }
 }
 
 void MXMLWriter::finish()
 {
-    if (positionInMeasure != 0)
+    if ((int)measureFill != 0)
         part->push(measure);
 
     score->push(part);			// adds a part to the score
