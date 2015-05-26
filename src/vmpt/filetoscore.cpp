@@ -6,16 +6,70 @@
 #include "realtimevamphost.h"
 #include "transcribehelper.h"
 
-SoundFile::SoundFile(QString soundFileInput) :
-    m_soundFileInput(soundFileInput)
+SoundFile::SoundFile()
+  : m_inputType(UNDEFINED)
 {
 }
 
-void SoundFile::toMusicXML(QString mxmlFileOutput)
+SoundFile::SoundFile(QString soundFileInput)
+  : m_soundFileInput(soundFileInput)
+  , m_inputType(LOCAL_FILE)
+{
+}
+
+SoundFile& SoundFile::fromFile(QString soundFileInput)
+{
+    m_inputType = LOCAL_FILE;
+    m_soundFileInput = soundFileInput;
+
+    return *this;
+}
+
+SoundFile& SoundFile::fromMicrophone(qint64 recordingSeconds)
+{
+    m_inputType = MICROPHONE;
+}
+
+void SoundFile::microphoneToScore(QString mxmlFileOutput)
+{
+
+    throw "not implemented ";
+    m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
+
+    // TODOJOY get from recorder settings
+    int samplerate = 44100;
+    int channels = 1;
+
+
+//    InputTest test;
+//    qDebug() << "recording for x seconds...";
+//    test.initializeAudioAndStartRecording();
+//    QThread::sleep(5);
+//    qDebug() << "recording done...";
+
+
+
+
+
+//    // TODOJOY get Plugin info from ?? Settings Class/File
+//    RealTimeVampHost vampHost("cepstral-pitchtracker",
+//                    "cepstral-pitchtracker", samplerate, channels, "notes", false,
+//        fileReader);
+
+//    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
+//    vampHost.process();
+
+//    m_outputxml->finish();
+
+//    delete m_outputxml;
+//    m_outputxml = 0;
+}
+
+void SoundFile::fileToScore(QString mxmlFileOutput)
 {
     m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
 
-    AudioFileReader fileReader(m_soundFileInput.toStdString());
+    AudioFileReader fileReader(m_soundFileInput);
     SF_INFO fileInfo = fileReader.opensnd();
 
     // TODOJOY get Plugin info from ?? Settings Class/File
@@ -30,6 +84,21 @@ void SoundFile::toMusicXML(QString mxmlFileOutput)
 
     delete m_outputxml;
     m_outputxml = 0;
+}
+
+void SoundFile::toMusicXML(QString mxmlFileOutput)
+{
+    switch(m_inputType)
+    {
+    case LOCAL_FILE:
+        fileToScore(mxmlFileOutput);
+        break;
+    case MICROPHONE:
+        microphoneToScore(mxmlFileOutput);
+        break;
+    default:
+        throw "Input type not implemented ";
+    }
 }
 
 void SoundFile::collectFeatures(Plugin::FeatureList *features)

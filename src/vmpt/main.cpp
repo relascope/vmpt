@@ -89,12 +89,8 @@ void readWavDirect()
 
 }
 
-int main(int argc, char *argv[])
+void testOneTwoChannels(QDir appDir)
 {
-    QCoreApplication a(argc, argv);
-
-
-    QDir appDir = QDir(a.applicationDirPath());
     appDir.cdUp();
     appDir.cdUp();
     appDir.cd("audio");
@@ -128,9 +124,23 @@ int main(int argc, char *argv[])
         if (bytes1.at(i) != bytes2.at(i))
             throw "MusicXML not equivalent for different channels ";
     }
+}
 
+#include <QThread>
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+
+    testOneTwoChannels(a.applicationDirPath());
     qDebug() << "test succeeded! ";
 
+
+    SoundFile().fromFile("/tmp/testfloat.raw").toMusicXML("/tmp/raw.xml");
+
+
+//    SoundFile().fromMicrophone(5).toMusicXML("/tmp/mic.xml");
 
     return a.exec();
 }

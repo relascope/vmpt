@@ -13,13 +13,100 @@
 
 // TODOJOY works only on linux!!!
 #include <signal.h>
-#define ASSERT(TEST) if(!(TEST)) raise(SIGSTOP);
+#define ASSERT(TEST) if(!(TEST)) raise(SIGTRAP);
 
 
 #include <QFile>
 #include <QFileInfo>
 #include <QDateTime>
 #include <QCoreApplication>
+
+
+
+
+#include <QAudioInput>
+#include <QByteArray>
+#include <QObject>
+
+
+#include <QFile>
+
+
+
+
+
+#include "readfloatinterface.h"
+
+class AudioInfo : public QIODevice,
+        public ReadFloatInterface
+{
+    Q_OBJECT
+
+public:
+    AudioInfo(const QAudioFormat &format, QString fileToWrite = "", QObject *parent = 0);
+    ~AudioInfo();
+
+    void start();
+    void stop();
+
+    qreal level() const { return m_level; }
+
+    qint64 readData(char *data, qint64 maxlen);
+    qint64 writeData(const char *data, qint64 len);
+
+private:
+    const QAudioFormat m_format;
+    quint32 m_maxAmplitude;
+    qreal m_level; // 0.0 <= m_level <= 1.0
+
+    QString m_fileToWrite;
+    bool m_writeFile;
+    QFile m_File;
+
+
+    bool m_running;
+signals:
+    void update();
+
+    // ReadFloatInterface interface
+public:
+    int ReadFloat(float *buffer, int size);
+};
+
+
+
+class InputTest : public QObject
+{
+    Q_OBJECT
+public:
+    void initializeAudioAndStartRecording();
+    void stop();
+
+    InputTest();
+private:
+    bool m_pullMode;
+
+    QAudioFormat m_format;
+
+    AudioInfo *m_audioInfo;
+
+    QAudioInput *m_audioInput;
+
+    QAudioDeviceInfo m_device;
+
+    void createAudioInputAndStart();
+    void readMore();
+
+    int BufferSize;
+
+    QIODevice *m_input;
+    QByteArray m_buffer;
+};
+
+
+
+
+
 
 
 
