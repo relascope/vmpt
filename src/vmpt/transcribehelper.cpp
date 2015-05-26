@@ -43,3 +43,32 @@ QString TranscribeHelper::getNoteFromFreq(float val)
 
     return noteName;
 }
+
+int TranscribeHelper::getOctaveFromFreq(float frequency)
+{
+    int octave = 4; // octave of standard pitch (a)
+
+    // 440 * 2 ^(noteabstandvona/12) = freq
+    qreal c4freq = 440 * qPow(2, -9.5/12.);
+
+    if (frequency < c4freq)
+    {
+        do
+        {
+            octave--;
+            frequency *= 2.;
+        } while (frequency < c4freq);
+
+        return octave;
+    }
+
+
+    while (frequency > c4freq)
+    {
+        octave++;
+        frequency /= 2.;
+    }
+    octave--;
+
+    return octave;
+}

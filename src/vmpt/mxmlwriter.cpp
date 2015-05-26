@@ -11,7 +11,8 @@
 using namespace MusicXML2;
 using std::string;
 
-#define DIVISION_PER_QUARTER	16
+// TODOJOY DUPLICATE DEFINITION WITH FILETOSCORE
+#define DIVISION_PER_QUARTER	4
 
 //------------------------------------------------------------------------
 // a function that return random numbers in the given range

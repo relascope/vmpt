@@ -48,8 +48,6 @@ public:
 
     cbFeaturesAvailable featuresAvailable;
 
-    ReadFloatInterface& m_reader;
-
 protected:
     void initialisePlugin();
 
@@ -63,6 +61,7 @@ protected:
 
     bool m_useFrames;
 
+    ReadFloatInterface& m_reader;
 private:
     Plugin *m_plugin;
 

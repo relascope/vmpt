@@ -1,5 +1,7 @@
 #include "filetoscore.h"
 
+#include <QDebug>
+
 #include "audiofilereader.h"
 #include "realtimevamphost.h"
 #include "transcribehelper.h"
@@ -21,7 +23,7 @@ void SoundFile::toMusicXML(QString mxmlFileOutput)
                     "cepstral-pitchtracker", fileInfo.samplerate, fileInfo.channels, "notes", false,
         fileReader);
 
-//    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
+    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
     vampHost.process();
 
     m_outputxml->finish();
@@ -32,6 +34,9 @@ void SoundFile::toMusicXML(QString mxmlFileOutput)
 
 void SoundFile::collectFeatures(Plugin::FeatureList *features)
 {
+
+    qDebug() << "Features!! ";
+
     for (Plugin::Feature feature : *features)
     {
         std::cout << std::endl;
@@ -52,7 +57,8 @@ SoundFile::~SoundFile()
         delete m_outputxml;
 }
 
-#define DIVISION_PER_QUARTER 16
+// TODOJOY DUPLICATE DEFINITION WITH MXMLWRITER
+#define DIVISION_PER_QUARTER 4
 
 void SoundFile::writeNoteToScore(float val, RealTime duration, RealTime timestamp)
 {
@@ -100,6 +106,7 @@ void SoundFile::writeNoteToScore(float val, RealTime duration, RealTime timestam
 
     int mxmlDuration = fmxmlDuration;
 
+    mxmlDuration = DIVISION_PER_QUARTER;
     // TODOJOY CHECK why?
 //    if (mxmlDuration == 0)
 //        return;
@@ -108,7 +115,9 @@ void SoundFile::writeNoteToScore(float val, RealTime duration, RealTime timestam
 
     QString note = TranscribeHelper().getNoteFromFreq(val);
 
-    m_outputxml->addNote(note, 4, DIVISION_PER_QUARTER);
+    int octave = TranscribeHelper().getOctaveFromFreq(val);
+
+    m_outputxml->addNote(note, octave, mxmlDuration);
 }
 
 

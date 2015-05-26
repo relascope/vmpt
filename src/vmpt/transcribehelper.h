@@ -12,6 +12,8 @@ public:
 
     QString getNoteFromFreq(float val);
 
+    int getOctaveFromFreq(float frequency);
+
 private:
     QString getNoteName(int roundedLevel);
     static qreal qLog2(qreal n);
