@@ -9,8 +9,6 @@ QT  -= gui
 QT  += multimedia
 QT  +=  testlib
 
-QMAKE_CXX = ccache gcc
-
 CONFIG += c++11
 CONFIG += testcase
 
