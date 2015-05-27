@@ -1,6 +1,7 @@
 #include "debughelper.h"
 
 #include <QDebug>
+#include <QTimer>
 
 
 const int BufferSize = 4096;
@@ -8,22 +9,6 @@ const int BufferSize = 4096;
 InputTest::InputTest() :
     m_device(QAudioDeviceInfo::defaultInputDevice()),
     m_buffer(BufferSize, 0)
-{
-
-}
-
-void InputTest::stop()
-{
-    m_audioInput->stop();
-
-    m_audioInfo->stop();
-
-    if (m_input)
-        m_input->close();
-}
-
-
-void InputTest::initializeAudioAndStartRecording()
 {
     m_pullMode = true;
 
@@ -45,17 +30,45 @@ void InputTest::initializeAudioAndStartRecording()
     }
 
     m_audioInfo  = new AudioInfo(m_format, "/tmp/testfloat.raw", this);
+}
 
-//    connect(m_audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
+void InputTest::stop()
+{
+    if (m_audioInput)
+    {
+        m_audioInput->stop();
+        delete m_audioInput;
+        m_audioInput = 0;
+    }
 
-    createAudioInputAndStart();
+    if (m_audioInfo)
+    {
+        m_audioInfo->stop();
+        delete m_audioInfo;
+        m_audioInfo = 0;
+    }
+
+    if (m_input)
+    {
+        if (m_input->isOpen())
+            m_input->close();
+
+        delete m_input;
+        m_input = 0;
+    }
 }
 
 void InputTest::createAudioInputAndStart()
 {
     m_audioInput = new QAudioInput(m_device, m_format, this);
     m_audioInfo->start();
+
     m_audioInput->start(m_audioInfo);
+
+//    QTimer *timer = new QTimer(this);
+//    ASSERT(connect(timer, SIGNAL(timeout()), this, SLOT(stop())));
+
+//    timer->start(5000);
 }
 
 void InputTest::readMore()
@@ -146,22 +159,35 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
     // done in separate step!!
     // we try to do it reverse way???
 
+    qint64 bytesWritten = m_data.write(data, len);
+
+    if (bytesWritten != len)
+    {
+        qDebug() << "could not store all data...";
+    }
+
     return len;
 }
 
-#include <QThread>
 
 int AudioInfo::ReadFloat(float *buffer, int size)
 {
-    int bytesReady = 0;
+//    int bytesReady = m_data.bytesAvailable();
 
-    while (size > bytesReady && m_running)
-    {
-        // wait
-        QThread::msleep(10);
-    }
+//    while (size * 4 > bytesReady && m_running)
+//    {
+//        // wait
+////        QThread::msleep(10);
+//        QTimer t;
+//        t.setSingleShot(true);
+//        t.start(10);
+
+//        bytesReady = m_data.bytesAvailable();
+//    }
 
     int bytesRead = 0;
+
+//    bytesRead = m_data.read(reinterpret_cast<char*>(buffer), size*4);
 
     return bytesRead;
 }

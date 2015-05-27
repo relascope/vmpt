@@ -4,14 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core
-
-QT       -= gui
-QT += multimedia
+QT  += core
+QT  -= gui
+QT  += multimedia
 
 
 # comment if ccache is not installed
-QMAKE_CXX = ccache g++
+QMAKE_CXX = ccache gcc
 
 TARGET = vmpt
 CONFIG   += console
@@ -23,9 +22,7 @@ TEMPLATE = app
 
 
 LIBS += -lvamp-hostsdk
-
 LIBS += -lmusicxml2
-
 LIBS += -lsndfile
 
 SOURCES += main.cpp \

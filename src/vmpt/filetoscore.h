@@ -1,10 +1,10 @@
 #ifndef FILETOSCORE_H
 #define FILETOSCORE_H
 
-#include <mxmlwriter.h>
-
 #include <vamp-hostsdk/RealTime.h>
 #include <vamp-hostsdk/Plugin.h>
+
+#include "mxmlwriter.h"
 
 using Vamp::Plugin;
 

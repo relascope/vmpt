@@ -7,11 +7,11 @@
 #ifndef VAMPHOST_H
 #define VAMPHOST_H
 
+#include <vamp-hostsdk/PluginLoader.h>
+
 #include <functional>
 
 #include <QString>
-
-#include <vamp-hostsdk/PluginLoader.h>
 
 #include "readfloatinterface.h"
 #include "debughelper.h"

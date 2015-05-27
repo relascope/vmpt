@@ -1,14 +1,16 @@
 #ifndef MXMLWRITER_H
 #define MXMLWRITER_H
 
-#include <QString>
+#include <libmusicxml/factory.h>
+#include <libmusicxml/elements.h>
+#include <libmusicxml/xml.h>
+#include <libmusicxml/xmlfile.h>
+
 
 #include<fstream>
 
-#include <libmusicxml/elements.h>
-#include <libmusicxml/factory.h>
-#include <libmusicxml/xml.h>
-#include <libmusicxml/xmlfile.h>
+#include <QString>
+
 
 using namespace MusicXML2;
 

@@ -32,7 +32,7 @@
 #include <QFile>
 
 
-
+#include <QBuffer>
 
 
 #include "readfloatinterface.h"
@@ -54,6 +54,10 @@ public:
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 len);
 
+    // ReadFloatInterface interface
+public:
+    int ReadFloat(float *buffer, int size);
+
 private:
     const QAudioFormat m_format;
     quint32 m_maxAmplitude;
@@ -63,14 +67,12 @@ private:
     bool m_writeFile;
     QFile m_File;
 
+    QBuffer m_data;
 
     bool m_running;
 signals:
     void update();
 
-    // ReadFloatInterface interface
-public:
-    int ReadFloat(float *buffer, int size);
 };
 
 
@@ -79,10 +81,12 @@ class InputTest : public QObject
 {
     Q_OBJECT
 public:
-    void initializeAudioAndStartRecording();
-    void stop();
-
     InputTest();
+    void createAudioInputAndStart();
+
+    ReadFloatInterface *getReader() {return m_audioInfo;}
+public slots:
+    void stop();
 private:
     bool m_pullMode;
 
@@ -94,7 +98,6 @@ private:
 
     QAudioDeviceInfo m_device;
 
-    void createAudioInputAndStart();
     void readMore();
 
     int BufferSize;

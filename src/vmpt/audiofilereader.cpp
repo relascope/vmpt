@@ -1,14 +1,30 @@
 #include "audiofilereader.h"
 
-#include <string.h>
-
 #include <QDebug>
+#include <QFile>
+#include <QFileInfo>
+
+#include <sndfile.hh>
+
+#include <string.h>
 
 AudioFileReader::AudioFileReader(QString audioFile) :
     m_fileName(audioFile)
-  , m_sndfiletmp(0)
+  , m_sndfile(audioFile.toStdString())
   , m_file(0)
 {
+    if (!fileExists(audioFile))
+        throw "File not found ";
+}
+
+bool AudioFileReader::fileExists(QString path) {
+    QFileInfo checkFile(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (checkFile.exists() && checkFile.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 int AudioFileReader::readRawFloat(float *buffer, int size)
@@ -24,48 +40,39 @@ int AudioFileReader::readRawFloat(float *buffer, int size)
 int AudioFileReader::ReadFloat(float* buffer, int size)
 {
     if (!m_file)
-        return sf_readf_float(m_sndfiletmp, buffer, size);
-    else if (!m_sndfiletmp)
-        return readRawFloat(buffer, size);
+        return m_sndfile.readf(buffer, size);
     else
-        throw "No File to read... ";
+        return readRawFloat(buffer, size);
 }
 
-SF_INFO AudioFileReader::opensnd()
+AudioFileReader::AUDIO_FILE_INFO AudioFileReader::opensnd()
 {
-    memset(&m_fileInfo, 0, sizeof(SF_INFO));
+    AUDIO_FILE_INFO result;
 
-    m_sndfiletmp = sf_open(m_fileName.toStdString().c_str(), SFM_READ, &m_fileInfo);
-    if (!m_sndfiletmp) {
-        int len = 2048;
-        char* buff = new char[len];
-        sf_error_str(m_sndfiletmp, buff, len);
+    if (!m_sndfile.error()) {
+        result.channels = m_sndfile.channels();
+        result.samplerate = m_sndfile.samplerate();
+    } else {
+        QString msg("Error loading file: ");
+        msg += m_sndfile.strError();
 
-        string msg("Error loading file: ");
-        msg += buff;
-
-        qDebug() << QString::fromStdString(msg);
+        qDebug() << msg;
         qDebug() << "We try to read raw data... ";
 
         // begin to work...
         // we try to provide a fake info in the format of the recording we support
-        m_fileInfo.channels = 1;
-        m_fileInfo.samplerate = 44100;
+        result.channels = 1;
+        result.samplerate = 44100;
 
         m_file = new QFile(m_fileName);
         m_file->open(QIODevice::ReadOnly);
     }
 
-    return m_fileInfo;
+    return result;
 }
 
 AudioFileReader::~AudioFileReader()
 {
-    if (m_sndfiletmp)
-    {
-        sf_close(m_sndfiletmp);
-    }
-
     if (m_file)
     {
         if (m_file->isOpen())

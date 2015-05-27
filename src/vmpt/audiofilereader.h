@@ -1,14 +1,13 @@
 #ifndef AUDIOFILEREADER_H
 #define AUDIOFILEREADER_H
 
-#include <QString>
-#include <QFile>
+#include <sndfile.hh>
 
-#include <sndfile.h>
+#include <QString>
 
 #include "readfloatinterface.h"
 
-using std::string;
+class QFile;
 
 /**
  * @brief The AudioFileReader class
@@ -19,18 +18,24 @@ using std::string;
 class AudioFileReader : public ReadFloatInterface
 {
 public:
+    typedef struct {
+        int channels;
+        int samplerate;
+    } AUDIO_FILE_INFO;
+
+public:
     AudioFileReader(QString audioFile);
     virtual ~AudioFileReader();
 
-    SF_INFO opensnd();
+    AUDIO_FILE_INFO opensnd();
 
     int ReadFloat(float *buffer, int size);
 private:
     int readRawFloat(float *buffer, int size);
+    bool fileExists(QString path);
 private:
     QString m_fileName;
-    SNDFILE *m_sndfiletmp;
-    SF_INFO m_fileInfo;
+    SndfileHandle m_sndfile;
     QFile *m_file;
 };
 

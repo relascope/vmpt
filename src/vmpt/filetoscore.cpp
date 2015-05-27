@@ -1,10 +1,11 @@
 #include "filetoscore.h"
 
-#include <QDebug>
-
 #include "audiofilereader.h"
 #include "realtimevamphost.h"
 #include "transcribehelper.h"
+
+#include <QDebug>
+
 
 SoundFile::SoundFile()
   : m_inputType(UNDEFINED)
@@ -28,12 +29,12 @@ SoundFile& SoundFile::fromFile(QString soundFileInput)
 SoundFile& SoundFile::fromMicrophone(qint64 recordingSeconds)
 {
     m_inputType = MICROPHONE;
+    return *this;
 }
 
 void SoundFile::microphoneToScore(QString mxmlFileOutput)
 {
 
-    throw "not implemented ";
     m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
 
     // TODOJOY get from recorder settings
@@ -41,7 +42,7 @@ void SoundFile::microphoneToScore(QString mxmlFileOutput)
     int channels = 1;
 
 
-//    InputTest test;
+    InputTest test;
 //    qDebug() << "recording for x seconds...";
 //    test.initializeAudioAndStartRecording();
 //    QThread::sleep(5);
@@ -52,17 +53,19 @@ void SoundFile::microphoneToScore(QString mxmlFileOutput)
 
 
 //    // TODOJOY get Plugin info from ?? Settings Class/File
-//    RealTimeVampHost vampHost("cepstral-pitchtracker",
-//                    "cepstral-pitchtracker", samplerate, channels, "notes", false,
-//        fileReader);
+    RealTimeVampHost vampHost("cepstral-pitchtracker",
+                    "cepstral-pitchtracker", samplerate, channels, "notes", false,
+        *test.getReader());
 
-//    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
-//    vampHost.process();
+    test.createAudioInputAndStart();
 
-//    m_outputxml->finish();
+    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
+    vampHost.process();
 
-//    delete m_outputxml;
-//    m_outputxml = 0;
+    m_outputxml->finish();
+
+    delete m_outputxml;
+    m_outputxml = 0;
 }
 
 void SoundFile::fileToScore(QString mxmlFileOutput)
@@ -70,7 +73,7 @@ void SoundFile::fileToScore(QString mxmlFileOutput)
     m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
 
     AudioFileReader fileReader(m_soundFileInput);
-    SF_INFO fileInfo = fileReader.opensnd();
+    AudioFileReader::AUDIO_FILE_INFO fileInfo = fileReader.opensnd();
 
     // TODOJOY get Plugin info from ?? Settings Class/File
     RealTimeVampHost vampHost("cepstral-pitchtracker",

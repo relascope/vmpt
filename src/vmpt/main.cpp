@@ -12,22 +12,20 @@
 #include <time.h>
 #include <math.h>
 
-#include <debughelper.h>
+#include "debughelper.h"
 
 
 #include <QtMath>
 
-QFile soundFile;
-
-int64_t readFloatFromFile(float *buffer, int64_t size)
+QDir getAudioDir()
 {
-    char *cBuffer = new char[size*sizeof(float)/sizeof(char)];
-    qint64 bytesRead = soundFile.read(cBuffer, size * sizeof(float)/sizeof(char));
-    memcpy(buffer, cBuffer, bytesRead);
+    QDir appDir = QCoreApplication::applicationDirPath();
 
-    throw "reads shit";
+    appDir.cdUp();
+    appDir.cdUp();
+    appDir.cd("audio");
 
-    return bytesRead  * sizeof(char) / sizeof(float);
+    return appDir;
 }
 
 int wavheadersize(QString fileName){
@@ -67,41 +65,18 @@ int wavheadersize(QString fileName){
     return 0;
 }
 
-void readWavDirect()
+void testOneTwoChannels()
 {
-//    soundFile.setFileName("/home/dojoy/Music/a1.wav");
+    QDir audioDir = getAudioDir();
 
-    QString fileName = "/home/dojoy/Music/cats1.wav";
-
-    int wavHeaderInBytes = wavheadersize(fileName);
-
-    soundFile.setFileName(fileName);
-    soundFile.open(QFile::ReadOnly);
-
-    soundFile.read(wavHeaderInBytes); // read header to not be mixed with our data ;-)
-
-//    RealTimeVampHost *myHost = new RealTimeVampHost("cepstral-pitchtracker",
-//                    "cepstral-pitchtracker", 44100, 1, "notes", false,
-//                    readFloatFromFile);
-
-//    myHost->process();
-//    delete myHost;
-
-}
-
-void testOneTwoChannels(QDir appDir)
-{
-    appDir.cdUp();
-    appDir.cdUp();
-    appDir.cd("audio");
-    QString file1 = appDir.absoluteFilePath("fini1.wav");
-    QString file2 = appDir.absoluteFilePath("fini.wav");
-
-    qDebug() << "read file with ONE channel ... ";
-    SoundFile(file1).toMusicXML("/tmp/fini1.xml");
+    QString file1 = audioDir.absoluteFilePath("fini1.wav");
+    QString file2 = audioDir.absoluteFilePath("fini.wav");
 
     qDebug() << "read file with TWO channels ... ";
     SoundFile(file2).toMusicXML("/tmp/fini2.xml");
+
+    qDebug() << "read file with ONE channel ... ";
+    SoundFile(file1).toMusicXML("/tmp/fini1.xml");
 
 
     // TODOJOY ASSERT ARE IDENTICAL!!!
@@ -125,20 +100,35 @@ void testOneTwoChannels(QDir appDir)
             throw "MusicXML not equivalent for different channels ";
     }
 }
-
 #include <QThread>
+
+void testRecord()
+{
+    InputTest audiotest;
+
+    qDebug() << "start record ";
+    audiotest.createAudioInputAndStart();
+
+    QThread::msleep(5000);
+
+    audiotest.stop();
+
+    qDebug() << "stopped recording ";
+
+}
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-
-    testOneTwoChannels(a.applicationDirPath());
+    testOneTwoChannels();
     qDebug() << "test succeeded! ";
 
 
-    SoundFile().fromFile("/tmp/testfloat.raw").toMusicXML("/tmp/raw.xml");
+//    SoundFile().fromFile("/tmp/testfloat.raw").toMusicXML("/tmp/raw.xml");
 
+
+//    testRecord();
 
 //    SoundFile().fromMicrophone(5).toMusicXML("/tmp/mic.xml");
 
