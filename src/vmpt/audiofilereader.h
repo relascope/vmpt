@@ -15,7 +15,7 @@ class QFile;
  * and raw formats in the recording we use
  *   (no guessing - fixed values!!!)
  */
-class AudioFileReader : public ReadFloatInterface
+class AbstractAudioFileReader : public ReadFloatInterface
 {
 public:
     typedef struct {
@@ -24,8 +24,8 @@ public:
     } AUDIO_FILE_INFO;
 
 public:
-    AudioFileReader(QString audioFile);
-    virtual ~AudioFileReader();
+    AbstractAudioFileReader(QString audioFile);
+    virtual ~AbstractAudioFileReader();
 
     AUDIO_FILE_INFO opensnd();
 

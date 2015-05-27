@@ -29,7 +29,8 @@ HEADERS += \
     audiofilereadertest.h \
     testrunner.h \
     sndfiletest.h \
-    sndfiletesthh.h
+    sndfiletesthh.h \
+    sndfileallinclusive.h
 
 
 # TODOJOY copy paste from vmpt without main.pp
