@@ -8,10 +8,6 @@ QT  += core
 QT  -= gui
 QT  += multimedia
 
-
-# comment if ccache is not installed
-QMAKE_CXX = ccache gcc
-
 TARGET = vmpt
 CONFIG   += console
 CONFIG   -= app_bundle
