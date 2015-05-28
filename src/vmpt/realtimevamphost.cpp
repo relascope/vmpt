@@ -1,7 +1,5 @@
 #include "realtimevamphost.h"
 
-#include "audiofilereader.h"
-
 #include <QDebug>
 
 #include <vamp-hostsdk/PluginLoader.h>
@@ -17,13 +15,12 @@ using Vamp::HostExt::PluginInputDomainAdapter;
 
 using namespace std;
 
-RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, float inputSampleRate,
-                   int channels, QString output, bool useFrames,
-                    ReadFloatInterface &reader) :
+RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, QString output, bool useFrames,
+                    IAudioReader &reader) :
     m_libraryName(libraryName),
     m_pluginId(pluginId),
-    m_inputSampleRate(inputSampleRate),
-    m_channels(channels),
+    m_inputSampleRate(reader.getFileInfo().samplerate),
+    m_channels(reader.getFileInfo().channels),
     m_output(output),
     m_useFrames(useFrames),
     m_reader(reader),
@@ -58,7 +55,7 @@ void RealTimeVampHost::process()
         if ((m_blockSize==m_stepSize) || (currentStep == 0))
         {
             // read a full fresh block
-            if ((readCount = this->m_reader.ReadFloat(readbuf, m_blockSize)) < 0)
+            if ((readCount = this->m_reader.readFloat(readbuf, m_blockSize)) < 0)
             {
                 throw "Error reading block. ";
                 break;
@@ -73,7 +70,7 @@ void RealTimeVampHost::process()
             // TODOJOY step 3 is getting zeros at the beginning... (only if m_channels != 1)
             memmove(readbuf, readbuf + (m_stepSize * m_channels),
                     m_overlapSize * m_channels * sizeof(float));
-            if ((readCount = this->m_reader.ReadFloat(readbuf + (m_overlapSize * m_channels), m_stepSize)) < 0)
+            if ((readCount = this->m_reader.readFloat(readbuf + (m_overlapSize * m_channels), m_stepSize)) < 0)
             {
                 throw "Error reading block. ";
             }
@@ -327,7 +324,7 @@ int RealTimeVampHost::runPlugin()
 
         if ((m_blockSize==m_stepSize) || (currentStep==0)) {
             // read a full fresh block
-            if ((count = m_reader.ReadFloat(filebuf, m_blockSize)) < 0) {
+            if ((count = m_reader.readFloat(filebuf, m_blockSize)) < 0) {
                 throw "Read Error";
                 break;
             }
@@ -336,7 +333,7 @@ int RealTimeVampHost::runPlugin()
             //  otherwise shunt the existing data down and read the remainder.
             memmove(filebuf, filebuf + (m_stepSize * channels),
                     overlapSize * channels * sizeof(float));
-            if ((count = m_reader.ReadFloat(filebuf + (overlapSize * channels), m_stepSize)) < 0) {
+            if ((count = m_reader.readFloat(filebuf + (overlapSize * channels), m_stepSize)) < 0) {
                 throw "Error reading float";
                 break;
             }

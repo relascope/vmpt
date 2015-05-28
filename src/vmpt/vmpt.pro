@@ -12,28 +12,8 @@ TARGET = vmpt
 CONFIG   += console
 CONFIG   -= app_bundle
 
-CONFIG += c++11
-
 TEMPLATE = app
 
-
-LIBS += -lvamp-hostsdk
-LIBS += -lmusicxml2
-LIBS += -lsndfile
-
 SOURCES += main.cpp \
-    realtimevamphost.cpp \
-    mxmlwriter.cpp \
-    filetoscore.cpp \
-    transcribehelper.cpp \
-    debughelper.cpp \
-    audiofilereader.cpp
 
-HEADERS += \
-    realtimevamphost.h \
-    debughelper.h \
-    mxmlwriter.h \
-    filetoscore.h \
-    transcribehelper.h \
-    audiofilereader.h \
-    readfloatinterface.h
+include(vmpt.pri)

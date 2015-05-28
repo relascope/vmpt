@@ -79,6 +79,9 @@ void testOneTwoChannels()
     SoundFile(file1).toMusicXML("/tmp/fini1.xml");
 
 
+
+    qDebug() << "Files read, analised and written";
+
     // TODOJOY ASSERT ARE IDENTICAL!!!
     // MOVE TO TEST
 
@@ -99,22 +102,6 @@ void testOneTwoChannels()
         if (bytes1.at(i) != bytes2.at(i))
             throw "MusicXML not equivalent for different channels ";
     }
-}
-#include <QThread>
-
-void testRecord()
-{
-    InputTest audiotest;
-
-    qDebug() << "start record ";
-    audiotest.createAudioInputAndStart();
-
-    QThread::msleep(5000);
-
-    audiotest.stop();
-
-    qDebug() << "stopped recording ";
-
 }
 
 int main(int argc, char *argv[])
