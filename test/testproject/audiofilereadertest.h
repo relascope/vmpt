@@ -17,9 +17,9 @@ class AudioFileReaderTest : public QObject
 private slots:
 
     void testDestructor() {
-        AudioFileReader reader(""), *preader;
+        AbstractAudioFileReader reader(""), *preader;
 
-        preader = new AudioFileReader("");
+        preader = new AbstractAudioFileReader("");
 
         delete preader;
     }
@@ -27,9 +27,9 @@ private slots:
     void testWavTwoChannels() {
         QString file = getAudioDir().absoluteFilePath("fini2.wav");
 
-        AudioFileReader reader(file);
+        AbstractAudioFileReader reader(file);
 
-        AudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
+        AbstractAudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
 
         QVERIFY2(fileInfo.channels == 2, "channel count mismatch");
 
@@ -47,9 +47,9 @@ private slots:
     void testWavOneChannel() {
         QString file = getAudioDir().absoluteFilePath("fini1.wav");
 
-        AudioFileReader reader(file);
+        AbstractAudioFileReader reader(file);
 
-        AudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
+        AbstractAudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
 
         QVERIFY2(fileInfo.channels == 1, "channel count mismatch");
 
@@ -76,7 +76,7 @@ private:
 //        QVERIFY2(fileInfo.channels == expectedChannels, "channel count mismatch");
 
 
-        AudioFileReader *preader = new AudioFileReader(file);
+        AbstractAudioFileReader *preader = new AbstractAudioFileReader(file);
         preader->opensnd();
 
         float* filebuf = new float[1014 * expectedChannels];

@@ -72,8 +72,8 @@ void SoundFile::fileToScore(QString mxmlFileOutput)
 {
     m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
 
-    AudioFileReader fileReader(m_soundFileInput);
-    AudioFileReader::AUDIO_FILE_INFO fileInfo = fileReader.opensnd();
+    AbstractAudioFileReader fileReader(m_soundFileInput);
+    AbstractAudioFileReader::AUDIO_FILE_INFO fileInfo = fileReader.opensnd();
 
     // TODOJOY get Plugin info from ?? Settings Class/File
     RealTimeVampHost vampHost("cepstral-pitchtracker",

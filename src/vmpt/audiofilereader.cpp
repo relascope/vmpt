@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-AudioFileReader::AudioFileReader(QString audioFile) :
+AbstractAudioFileReader::AbstractAudioFileReader(QString audioFile) :
     m_fileName(audioFile)
   , m_sndfile(audioFile.toStdString())
   , m_file(0)
@@ -17,7 +17,7 @@ AudioFileReader::AudioFileReader(QString audioFile) :
         throw "File not found ";
 }
 
-bool AudioFileReader::fileExists(QString path) {
+bool AbstractAudioFileReader::fileExists(QString path) {
     QFileInfo checkFile(path);
     // check if file exists and if yes: Is it really a file and no directory?
     if (checkFile.exists() && checkFile.isFile()) {
@@ -27,7 +27,7 @@ bool AudioFileReader::fileExists(QString path) {
     }
 }
 
-int AudioFileReader::readRawFloat(float *buffer, int size)
+int AbstractAudioFileReader::readRawFloat(float *buffer, int size)
 {
     char* charbuff = new char[size * sizeof(float)];
     qint64 readCount = m_file->read(charbuff, size * sizeof(float));
@@ -37,7 +37,7 @@ int AudioFileReader::readRawFloat(float *buffer, int size)
     return readCount / sizeof(float);
 }
 
-int AudioFileReader::ReadFloat(float* buffer, int size)
+int AbstractAudioFileReader::ReadFloat(float* buffer, int size)
 {
     if (!m_file)
         return m_sndfile.readf(buffer, size);
@@ -45,7 +45,7 @@ int AudioFileReader::ReadFloat(float* buffer, int size)
         return readRawFloat(buffer, size);
 }
 
-AudioFileReader::AUDIO_FILE_INFO AudioFileReader::opensnd()
+AbstractAudioFileReader::AUDIO_FILE_INFO AbstractAudioFileReader::opensnd()
 {
     AUDIO_FILE_INFO result;
 
@@ -71,7 +71,7 @@ AudioFileReader::AUDIO_FILE_INFO AudioFileReader::opensnd()
     return result;
 }
 
-AudioFileReader::~AudioFileReader()
+AbstractAudioFileReader::~AbstractAudioFileReader()
 {
     if (m_file)
     {
