@@ -1,3 +1,6 @@
+INCLUDEPATH  += $$PWD
+
+CONFIG += c++11
 
 LIBS += -lvamp-hostsdk
 LIBS += -lmusicxml2
@@ -5,22 +8,22 @@ LIBS += -lsndfile
 
 
 SOURCES += \
-    realtimevamphost.cpp \
-    mxmlwriter.cpp \
-    filetoscore.cpp \
-    transcribehelper.cpp \
-    debughelper.cpp \
-    sndfileaudioreader.cpp \
-    rawfileaudioreader.cpp \
-    audioreaderfactory.cpp
+    $$PWD/realtimevamphost.cpp \
+    $$PWD/mxmlwriter.cpp \
+    $$PWD/filetoscore.cpp \
+    $$PWD/transcribehelper.cpp \
+    $$PWD/debughelper.cpp \
+    $$PWD/sndfileaudioreader.cpp \
+    $$PWD/rawfileaudioreader.cpp \
+    $$PWD/audioreaderfactory.cpp
 
 HEADERS += \
-    realtimevamphost.h \
-    debughelper.h \
-    mxmlwriter.h \
-    filetoscore.h \
-    transcribehelper.h \
-    iaudioreader.h \
-    sndfileaudioreader.h \
-    rawfileaudioreader.h \
-    audioreaderfactory.h
+    $$PWD/realtimevamphost.h \
+    $$PWD/debughelper.h \
+    $$PWD/mxmlwriter.h \
+    $$PWD/filetoscore.h \
+    $$PWD/transcribehelper.h \
+    $$PWD/iaudioreader.h \
+    $$PWD/sndfileaudioreader.h \
+    $$PWD/rawfileaudioreader.h \
+    $$PWD/audioreaderfactory.h

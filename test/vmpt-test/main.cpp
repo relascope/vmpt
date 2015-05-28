@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
     testRunner.addTest(new TranscribeTest());
 
-    testRunner.addTest(new AudioFileReaderTest());
+//    testRunner.addTest(new AudioFileReaderTest());
 
 
     bool testsSucceeded = testRunner.runTests();

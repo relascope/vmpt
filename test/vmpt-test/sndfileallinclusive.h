@@ -94,7 +94,6 @@ private:
 
 
 
-#include "audiofilereader.h"
 
 #include <QDebug>
 #include <QFile>
