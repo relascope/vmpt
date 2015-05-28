@@ -12,7 +12,7 @@ QT  +=  testlib
 CONFIG += c++11
 CONFIG += testcase
 
-TARGET = testproject
+TARGET = vmpt-test
 CONFIG   += console
 CONFIG   -= app_bundle
 
