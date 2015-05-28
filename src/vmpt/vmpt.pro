@@ -17,27 +17,11 @@ CONFIG += c++11
 TEMPLATE = app
 
 
-LIBS += -lvamp-hostsdk
-LIBS += -lmusicxml2
-LIBS += -lsndfile
+#LIBS += -lvamp-hostsdk
+#LIBS += -lmusicxml2
+#LIBS += -lsndfile
+
 
 SOURCES += main.cpp \
-    realtimevamphost.cpp \
-    mxmlwriter.cpp \
-    filetoscore.cpp \
-    transcribehelper.cpp \
-    debughelper.cpp \
-    sndfileaudioreader.cpp \
-    rawfileaudioreader.cpp \
-    audioreaderfactory.cpp
 
-HEADERS += \
-    realtimevamphost.h \
-    debughelper.h \
-    mxmlwriter.h \
-    filetoscore.h \
-    transcribehelper.h \
-    iaudioreader.h \
-    sndfileaudioreader.h \
-    rawfileaudioreader.h \
-    audioreaderfactory.h
+include(vmpt.pri)

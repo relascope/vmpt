@@ -1,7 +1,5 @@
 #include "realtimevamphost.h"
 
-#include "audiofilereader.h"
-
 #include <QDebug>
 
 #include <vamp-hostsdk/PluginLoader.h>

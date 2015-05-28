@@ -1,6 +1,5 @@
 #include "filetoscore.h"
 
-#include "audiofilereader.h"
 #include "realtimevamphost.h"
 #include "transcribehelper.h"
 #include "audioreaderfactory.h"
