@@ -22,7 +22,8 @@ INCLUDEPATH += ../../src/vmpt/
 
 
 SOURCES += \
-    main.cpp
+    main.cpp \
+    sndfileallinclusive.cpp
 
 HEADERS += \
     transcribetest.h \
