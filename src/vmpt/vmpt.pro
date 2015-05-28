@@ -27,7 +27,9 @@ SOURCES += main.cpp \
     filetoscore.cpp \
     transcribehelper.cpp \
     debughelper.cpp \
-    audiofilereader.cpp
+    sndfileaudioreader.cpp \
+    rawfileaudioreader.cpp \
+    audioreaderfactory.cpp
 
 HEADERS += \
     realtimevamphost.h \
@@ -35,5 +37,7 @@ HEADERS += \
     mxmlwriter.h \
     filetoscore.h \
     transcribehelper.h \
-    audiofilereader.h \
-    readfloatinterface.h
+    iaudioreader.h \
+    sndfileaudioreader.h \
+    rawfileaudioreader.h \
+    audioreaderfactory.h

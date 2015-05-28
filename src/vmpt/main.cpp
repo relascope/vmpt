@@ -79,6 +79,9 @@ void testOneTwoChannels()
     SoundFile(file1).toMusicXML("/tmp/fini1.xml");
 
 
+
+    qDebug() << "Files read, analised and written";
+
     // TODOJOY ASSERT ARE IDENTICAL!!!
     // MOVE TO TEST
 

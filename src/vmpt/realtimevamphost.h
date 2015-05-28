@@ -13,7 +13,7 @@
 
 #include <QString>
 
-#include "readfloatinterface.h"
+#include "iaudioreader.h"
 #include "debughelper.h"
 
 using Vamp::Plugin;
@@ -34,9 +34,8 @@ class RealTimeVampHost
     // TODOJOY useFrames default to false and a setter.
 public:
     RealTimeVampHost(QString libraryName, QString pluginId,
-                     float inputSampleRate, int channels,
                      QString output, bool useFrames,
-                     ReadFloatInterface& reader);
+                     IAudioReader& reader);
     virtual ~RealTimeVampHost();
 
     /**
@@ -61,7 +60,7 @@ protected:
 
     bool m_useFrames;
 
-    ReadFloatInterface& m_reader;
+    IAudioReader& m_reader;
 private:
     Plugin *m_plugin;
 
