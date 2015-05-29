@@ -226,10 +226,9 @@ RealTimeVampHost::~RealTimeVampHost()
 }
 
 /**
-  * FOLLOWING CODE IS A RELICT FROM PORTING FROM VAMP-HOSTSDK HOST EXAMPLE
+  * FROM VAMP-HOSTSDK HOST EXAMPLE
   */
-
-DEPRECATED void RealTimeVampHost::printFeatures(int frame, int sr, int output,
+void RealTimeVampHost::printFeatures(int frame, int sr, int output,
               Plugin::FeatureSet features, bool useFrames)
 {
     for (unsigned int i = 0; i < features[output].size(); ++i) {
@@ -279,117 +278,3 @@ DEPRECATED void RealTimeVampHost::printFeatures(int frame, int sr, int output,
         cout << endl;
     }
 }
-
-int RealTimeVampHost::runPlugin()
-{
-    int overlapSize = m_blockSize - m_stepSize;
-    sf_count_t currentStep = 0;
-    int finalStepsRemaining = max(1, (m_blockSize / m_stepSize) - 1); // at end of file, this many part-silent frames needed after we hit EOF
-
-    int channels = m_channels;
-
-
-    float *filebuf = new float[m_blockSize * channels];
-    float **plugbuf = new float*[channels];
-    for (int c = 0; c < channels; ++c) plugbuf[c] = new float[m_blockSize + 2];
-
-    cerr << "Using block size = " << m_blockSize << ", step size = "
-              << m_stepSize << endl;
-
-    // The channel queries here are for informational purposes only --
-    // a PluginChannelAdapter is being used automatically behind the
-    // scenes, and it will take case of any channel mismatch
-
-    int minch = m_plugin->getMinChannelCount();
-    int maxch = m_plugin->getMaxChannelCount();
-    cerr << "Plugin accepts " << minch << " -> " << maxch << " channel(s)" << endl;
-    cerr << "Sound file has " << channels << " (will mix/augment if necessary)" << endl;
-
-    Plugin::OutputList outputs = m_plugin->getOutputDescriptors();
-    Plugin::OutputDescriptor od;
-
-    int returnValue = 1;
-    int progress = 0;
-
-    RealTime rt;
-    PluginWrapper *wrapper = 0;
-    RealTime adjustment = RealTime::zeroTime;
-
-    this->initialisePlugin();
-
-    // Here we iterate over the frames, avoiding asking the numframes in case it's streaming input.
-    do {
-
-        int count;
-
-        if ((m_blockSize==m_stepSize) || (currentStep==0)) {
-            // read a full fresh block
-            if ((count = m_reader.readFloat(filebuf, m_blockSize)) < 0) {
-                throw "Read Error";
-                break;
-            }
-            if (count != m_blockSize) --finalStepsRemaining;
-        } else {
-            //  otherwise shunt the existing data down and read the remainder.
-            memmove(filebuf, filebuf + (m_stepSize * channels),
-                    overlapSize * channels * sizeof(float));
-            if ((count = m_reader.readFloat(filebuf + (overlapSize * channels), m_stepSize)) < 0) {
-                throw "Error reading float";
-                break;
-            }
-            if (count != m_stepSize) --finalStepsRemaining;
-            count += overlapSize;
-        }
-
-        for (int c = 0; c < channels; ++c) {
-            int j = 0;
-            while (j < count) {
-                plugbuf[c][j] = filebuf[j * m_channels + c];
-                ++j;
-            }
-            while (j < m_blockSize) {
-                plugbuf[c][j] = 0.0f;
-                ++j;
-            }
-        }
-
-        rt = RealTime::frame2RealTime(currentStep * m_stepSize, m_inputSampleRate);
-
-        Plugin::FeatureSet features = m_plugin->process(plugbuf, rt);
-
-        printFeatures
-            (RealTime::realTime2Frame(rt + adjustment, m_inputSampleRate),
-             m_inputSampleRate, m_outputNo, features,
-             m_useFrames);
-
-        ++currentStep;
-
-    } while (finalStepsRemaining > 0);
-
-    cerr << "\rDone" << endl;
-
-    rt = RealTime::frame2RealTime(currentStep * m_stepSize, m_inputSampleRate);
-
-    cerr << flush;
-    cout << flush;
-
-    cerr << "remaining features..." << endl;
-
-//    Plugin::FeatureSet remainingFeatures = plugin->getRemainingFeatures();
-//    cerr << "remaining features: " << remainingFeatures.size() << endl;
-
-//    printFeatures(RealTime::realTime2Frame(rt + adjustment, sfinfo.samplerate),
-//                  sfinfo.samplerate, outputNo,
-//                  remainingFeatures, out, useFrames);
-
-//    cerr << "skip remaining..." << endl;
-    printFeatures(RealTime::realTime2Frame(rt + adjustment, m_inputSampleRate),
-        m_inputSampleRate, m_outputNo,
-        m_plugin->getRemainingFeatures(), m_useFrames);
-
-    returnValue = 0;
-
-done:
-    return returnValue;
-}
-

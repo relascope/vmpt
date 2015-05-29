@@ -74,11 +74,9 @@ private:
 
 private:
     /**
-      * Ported from vamp-hostsdk host example
-      *
-      * */
-    DEPRECATED int runPlugin();
-    DEPRECATED void printFeatures(int frame, int sr, int output,
+      * FROM VAMP-HOSTSDK HOST EXAMPLE
+      */
+    void printFeatures(int frame, int sr, int output,
                   Plugin::FeatureSet features, bool useFrames);
 
 };
