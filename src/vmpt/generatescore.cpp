@@ -1,4 +1,4 @@
-#include "filetoscore.h"
+#include "generatescore.h"
 
 #include "realtimevamphost.h"
 #include "transcribehelper.h"
@@ -8,18 +8,18 @@
 #include <QDebug>
 
 
-SoundFile::SoundFile()
+GenerateScore::GenerateScore()
   : m_inputType(UNDEFINED)
 {
 }
 
-SoundFile::SoundFile(QString soundFileInput)
+GenerateScore::GenerateScore(QString soundFileInput)
   : m_soundFileInput(soundFileInput)
   , m_inputType(LOCAL_FILE)
 {
 }
 
-SoundFile& SoundFile::fromFile(QString soundFileInput)
+GenerateScore& GenerateScore::fromAudioFile(QString soundFileInput)
 {
     m_inputType = LOCAL_FILE;
     m_soundFileInput = soundFileInput;
@@ -27,66 +27,18 @@ SoundFile& SoundFile::fromFile(QString soundFileInput)
     return *this;
 }
 
-SoundFile& SoundFile::fromMicrophone(qint64 recordingSeconds)
-{
-    m_inputType = MICROPHONE;
-    return *this;
-}
-
-void SoundFile::microphoneToScore(QString mxmlFileOutput)
-{
-
-//    m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
-
-    // TODOJOY get from recorder settings
-    int samplerate = 44100;
-    int channels = 1;
-
-
-//    InputTest test;
-//    qDebug() << "recording for x seconds...";
-//    test.initializeAudioAndStartRecording();
-//    QThread::sleep(5);
-//    qDebug() << "recording done...";
-
-
-
-    throw "not implemented";
-
-
-//    // TODOJOY get Plugin info from ?? Settings Class/File
-//    RealTimeVampHost vampHost("cepstral-pitchtracker",
-//                    "cepstral-pitchtracker", samplerate, channels, "notes", false,
-//        *test.getReader());
-
-//    test.createAudioInputAndStart();
-
-//    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
-//    vampHost.process();
-
-//    m_outputxml->finish();
-
-//    delete m_outputxml;
-//    m_outputxml = 0;
-}
-
-void SoundFile::fileToScore(QString mxmlFileOutput)
+void GenerateScore::fileToScore(QString mxmlFileOutput)
 {
     m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
 
-//    AudioFileReader fileReader(m_soundFileInput);
-//    AudioFileReader::AUDIO_FILE_INFO fileInfo = fileReader.opensnd();
-
-
-    std::unique_ptr<IAudioReader> audioReader = AudioReaderFactory::create(m_soundFileInput);
-    audioReader->readFloat(0,0);
+    auto audioReader = AudioReaderFactory::create(m_soundFileInput);
 
     // TODOJOY get Plugin info from ?? Settings Class/File
     RealTimeVampHost vampHost("cepstral-pitchtracker",
                     "cepstral-pitchtracker", "notes", false,
         *audioReader);
 
-    vampHost.featuresAvailable = std::bind(&SoundFile::collectFeatures, this, _1);;
+    vampHost.featuresAvailable = std::bind(&GenerateScore::collectFeatures, this, _1);;
     vampHost.process();
 
     m_outputxml->finish();
@@ -95,22 +47,19 @@ void SoundFile::fileToScore(QString mxmlFileOutput)
     m_outputxml = 0;
 }
 
-void SoundFile::toMusicXML(QString mxmlFileOutput)
+void GenerateScore::toMusicXML(QString mxmlFileOutput)
 {
     switch(m_inputType)
     {
     case LOCAL_FILE:
         fileToScore(mxmlFileOutput);
         break;
-    case MICROPHONE:
-        microphoneToScore(mxmlFileOutput);
-        break;
     default:
         throw "Input type not implemented ";
     }
 }
 
-void SoundFile::collectFeatures(Plugin::FeatureList *features)
+void GenerateScore::collectFeatures(Plugin::FeatureList *features)
 {
 
     qDebug() << "Features!! ";
@@ -129,7 +78,7 @@ void SoundFile::collectFeatures(Plugin::FeatureList *features)
     }
 }
 
-SoundFile::~SoundFile()
+GenerateScore::~GenerateScore()
 {
     if (m_outputxml)
         delete m_outputxml;
@@ -138,7 +87,7 @@ SoundFile::~SoundFile()
 // TODOJOY DUPLICATE DEFINITION WITH MXMLWRITER
 #define DIVISION_PER_QUARTER 4
 
-void SoundFile::writeNoteToScore(float val, RealTime duration, RealTime timestamp)
+void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime timestamp)
 {
     float bpm = 130;
 
@@ -184,12 +133,15 @@ void SoundFile::writeNoteToScore(float val, RealTime duration, RealTime timestam
 
     int mxmlDuration = fmxmlDuration;
 
-    mxmlDuration = DIVISION_PER_QUARTER;
+    fmxmlDuration += timestamp.sec;//get rid of warning...
     // TODOJOY CHECK why?
 //    if (mxmlDuration == 0)
 //        return;
 
     // TODOJOY timestamp should be used to generate pause.... => last timestamp+duration needed...
+
+    // TODOJOY HACK if calculation breaks, you can go back to using quarters only.
+    mxmlDuration = DIVISION_PER_QUARTER;
 
     QString note = TranscribeHelper().getNoteFromFreq(val);
 

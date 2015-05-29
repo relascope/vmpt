@@ -1,21 +1,11 @@
 #include <QCoreApplication>
-
 #include <QDebug>
-
-
 #include <QFile>
 #include <QDir>
 
-#include <realtimevamphost.h>
-#include "filetoscore.h"
-
-#include <time.h>
-#include <math.h>
+#include "generatescore.h"
 
 #include "debughelper.h"
-
-
-#include <QtMath>
 
 QDir getAudioDir()
 {
@@ -28,43 +18,6 @@ QDir getAudioDir()
     return appDir;
 }
 
-int wavheadersize(QString fileName){
-
-    char b[4];
-    QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
-
-    file.seek(16);
-
-    file.read(b, 4);
-    file.close();
-
-    // little endian
-//    int Subchunk1Size2 = (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | (b[3]);
-            // big endian??
-    int Subchunk1Size = (b[3] << 24) | (b[2] << 16) | (b[1] << 8) | (b[0]);
-
-    if (Subchunk1Size < 16)
-        throw "no valid wav file";
-    else
-    {
-        switch (Subchunk1Size)
-        {
-        case 16:
-            return 44;
-        case 18:
-            return 46;
-        default:
-            throw "Header contains extra data and is larger than 46 bytes";
-            break;
-        }
-    }
-
-    ASSERT(false)
-
-    return 0;
-}
-
 void testOneTwoChannels()
 {
     QDir audioDir = getAudioDir();
@@ -73,11 +26,10 @@ void testOneTwoChannels()
     QString file2 = audioDir.absoluteFilePath("fini.wav");
 
     qDebug() << "read file with TWO channels ... ";
-    SoundFile(file2).toMusicXML("/tmp/fini2.xml");
+    GenerateScore().fromAudioFile(file2).toMusicXML("/tmp/fini2.xml");
 
     qDebug() << "read file with ONE channel ... ";
-    SoundFile(file1).toMusicXML("/tmp/fini1.xml");
-
+    GenerateScore().fromAudioFile(file1).toMusicXML("/tmp/fini1.xml");
 
 
     qDebug() << "Files read, analised and written";
@@ -111,13 +63,10 @@ int main(int argc, char *argv[])
     testOneTwoChannels();
     qDebug() << "test succeeded! ";
 
+    GenerateScore().fromAudioFile(getAudioDir().absoluteFilePath("fini1.wav")).toMusicXML("/tmp/fini1.xml");
+    GenerateScore().fromAudioFile(getAudioDir().absoluteFilePath("fini2.wav")).toMusicXML("/tmp/fini2.xml");
 
-//    SoundFile().fromFile("/tmp/testfloat.raw").toMusicXML("/tmp/raw.xml");
-
-
-//    testRecord();
-
-//    SoundFile().fromMicrophone(5).toMusicXML("/tmp/mic.xml");
+    qDebug() << "score generation done...";
 
     return a.exec();
 }

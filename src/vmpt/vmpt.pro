@@ -4,6 +4,9 @@
 #
 #-------------------------------------------------
 
+#QMAKE_CXXFLAGS += -Werror
+
+
 QT  += core
 QT  -= gui
 QT  += multimedia

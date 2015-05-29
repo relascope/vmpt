@@ -9,15 +9,16 @@
 using Vamp::Plugin;
 
 // TODOJOY Better description
-class SoundFile
+class GenerateScore
 {
+private:
+    // TODOJOY will be refactored to better reading...
+    GenerateScore(QString soundFileInput);
 public:
-    SoundFile();
-    SoundFile(QString soundFileInput);
-    virtual ~SoundFile();
+    GenerateScore();
+    virtual ~GenerateScore();
 
-    SoundFile& fromFile(QString soundFileInput);
-    SoundFile& fromMicrophone(qint64 recordingSeconds);
+    GenerateScore& fromAudioFile(QString soundFileInput);
 
     void toMusicXML(QString mxmlFileOutput);
 
