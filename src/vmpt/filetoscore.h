@@ -17,7 +17,6 @@ public:
     virtual ~SoundFile();
 
     SoundFile& fromFile(QString soundFileInput);
-    SoundFile& fromMicrophone(qint64 recordingSeconds);
 
     void toMusicXML(QString mxmlFileOutput);
 
