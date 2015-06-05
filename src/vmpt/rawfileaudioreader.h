@@ -10,6 +10,7 @@
 
 class RawFileAudioReader : public IAudioReader {
 public:
+    static bool mayReadFile(QString fileName);
     static std::unique_ptr<RawFileAudioReader> create(QString fileName);
 
     // IAudioReader interface

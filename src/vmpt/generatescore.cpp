@@ -33,7 +33,7 @@ void GenerateScore::fileToScore(QString mxmlFileOutput)
 
     auto audioReader = AudioReaderFactory::create(m_soundFileInput);
 
-    // TODOJOY get Plugin info from ?? Settings Class/File
+    // TODO DoJoY get Plugin info from ?? Settings Class/File
     RealTimeVampHost vampHost("cepstral-pitchtracker",
                     "cepstral-pitchtracker", "notes", false,
         *audioReader);
@@ -84,7 +84,7 @@ GenerateScore::~GenerateScore()
         delete m_outputxml;
 }
 
-// TODOJOY DUPLICATE DEFINITION WITH MXMLWRITER
+// TODO DoJoY DUPLICATE DEFINITION WITH MXMLWRITER
 #define DIVISION_PER_QUARTER 4
 
 void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime timestamp)
@@ -134,13 +134,13 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
     int mxmlDuration = fmxmlDuration;
 
     fmxmlDuration += timestamp.sec;//get rid of warning...
-    // TODOJOY CHECK why?
+    // TODO DoJoY CHECK why?
 //    if (mxmlDuration == 0)
 //        return;
 
-    // TODOJOY timestamp should be used to generate pause.... => last timestamp+duration needed...
+    // TODO DoJoY timestamp should be used to generate pause.... => last timestamp+duration needed...
 
-    // TODOJOY HACK if calculation breaks, you can go back to using quarters only.
+    // TODO DoJoY HACK if calculation breaks, you can go back to using quarters only.
     mxmlDuration = DIVISION_PER_QUARTER;
 
     QString note = TranscribeHelper().getNoteFromFreq(val);

@@ -11,7 +11,17 @@ RawFileAudioReader::create(QString fileName) {
     return std::unique_ptr<RawFileAudioReader>(new RawFileAudioReader(fileName));
 }
 
+bool
+RawFileAudioReader::mayReadFile(QString fileName)
+{
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
 
+    bool ret = file.exists() && file.isReadable();
+
+    file.close();
+    return ret;
+}
 
 // IAudioReader interface
 int
@@ -30,7 +40,7 @@ RawFileAudioReader::getFileInfo()
     AUDIO_INFO result;
     memset(&result, 0, sizeof(AUDIO_INFO));
 
-    // TODOJOY HACK where do we get values, when reading raw?
+    // TODO DoJoY HACK where do we get values, when reading raw?
     result.channels = 1;
     result.samplerate = 41000;
 

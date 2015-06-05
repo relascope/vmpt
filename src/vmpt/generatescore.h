@@ -8,11 +8,11 @@
 
 using Vamp::Plugin;
 
-// TODOJOY Better description
+// TODO DoJoY Better description
 class GenerateScore
 {
 private:
-    // TODOJOY will be refactored to better reading...
+    // TODO DoJoY will be refactored to better reading...
     GenerateScore(QString soundFileInput);
 public:
     GenerateScore();
