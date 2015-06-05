@@ -17,6 +17,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+LIBS += -lboost_program_options
+
 SOURCES += main.cpp \
 
 include(vmpt.pri)

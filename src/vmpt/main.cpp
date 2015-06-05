@@ -1,72 +1,46 @@
-#include <QCoreApplication>
-#include <QDebug>
-#include <QFile>
-#include <QDir>
-
 #include "generatescore.h"
 
-#include "debughelper.h"
+#include <boost/program_options.hpp>
 
-QDir getAudioDir()
-{
-    QDir appDir = QCoreApplication::applicationDirPath();
-
-    appDir.cdUp();
-    appDir.cdUp();
-    appDir.cd("audio");
-
-    return appDir;
-}
-
-void testOneTwoChannels()
-{
-    QDir audioDir = getAudioDir();
-
-    QString file1 = audioDir.absoluteFilePath("fini1.wav");
-    QString file2 = audioDir.absoluteFilePath("fini.wav");
-
-    qDebug() << "read file with TWO channels ... ";
-    GenerateScore().fromAudioFile(file2).toMusicXML("/tmp/fini2.xml");
-
-    qDebug() << "read file with ONE channel ... ";
-    GenerateScore().fromAudioFile(file1).toMusicXML("/tmp/fini1.xml");
-
-
-    qDebug() << "Files read, analised and written";
-
-    // TODOJOY ASSERT ARE IDENTICAL!!!
-    // MOVE TO TEST
-
-    QFile f1("/tmp/fini1.xml");
-    QFile f2("/tmp/fini2.xml");
-
-
-    f1.open(QIODevice::ReadOnly);
-    f2.open(QIODevice::ReadOnly);
-
-    QByteArray bytes1 = f1.readAll();
-    QByteArray bytes2 = f2.readAll();
-
-    ASSERT(bytes1.size() == bytes2.size())
-
-    for (qint64 i = 0; i < bytes1.size(); i++)
-    {
-        if (bytes1.at(i) != bytes2.at(i))
-            throw "MusicXML not equivalent for different channels ";
-    }
-}
+namespace po = boost::program_options;
+using std::cout;
+using std::endl;
+using std::string;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    po::options_description desc("Allowed options");
 
-    testOneTwoChannels();
-    qDebug() << "test succeeded! ";
+    desc.add_options()
+            ("help", "produce help message")
+            ("version,v", "print version string")
+            ("inputaudiofile,i", po::value<string>(), "audio input file")
+            ("outputmusicxmlscorefile,o", po::value<string>(), "music xml score output file")
+            ;
 
-    GenerateScore().fromAudioFile(getAudioDir().absoluteFilePath("fini1.wav")).toMusicXML("/tmp/fini1.xml");
-    GenerateScore().fromAudioFile(getAudioDir().absoluteFilePath("fini2.wav")).toMusicXML("/tmp/fini2.xml");
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
 
-    qDebug() << "score generation done...";
+    if (vm.count("help")) {
+        cout << desc << endl;
+        return 1;
+    }
 
-    return a.exec();
+    if (vm.count("version")) {
+        cout << "Version not defined... call Petra!" << endl;
+        return 1;
+    }
+
+    if (vm.count("inputaudiofile") && vm.count("outputmusicxmlscorefile")) {
+        QString inputAudioFile = QString::fromStdString(vm["inputaudiofile"].as<string>());
+        QString outputMusicXMLScoreFile = QString::fromStdString(vm["outputmusicxmlscorefile"].as<string>());
+
+        GenerateScore().fromAudioFile(inputAudioFile).toMusicXML(outputMusicXMLScoreFile);
+    } else {
+        cout << desc << endl;
+        return 1;
+    }
+
+    return 0;
 }
