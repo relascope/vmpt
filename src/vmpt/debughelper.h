@@ -11,7 +11,7 @@
 #define DEPRECATED
 #endif
 
-// TODOJOY works only on linux!!!
+// TODO DoJoY works only on linux!!!
 #include <signal.h>
 #define ASSERT(TEST) if(!(TEST)) raise(SIGTRAP);
 

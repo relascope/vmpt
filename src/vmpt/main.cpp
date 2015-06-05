@@ -24,9 +24,10 @@ void printHelp(const char *prog, po::options_description desc)
 
 int main(int argc, char *argv[])
 {
-    // ToDoJoY bad style to catch them all here...
+    // TODO DoJoY bad style to catch them all here...
     try
     {
+        // TODO DoJoY QCommandlineParser could be used... our framework...
         po::options_description desc("Allowed options");
 
         desc.add_options()
@@ -76,12 +77,12 @@ int main(int argc, char *argv[])
     }
     catch (QString& ex)
     {
-        qDebug() << "catch QString";
+        qDebug() << "catch QString&";
         cout << ex.toStdString() << endl;
     }
     catch (std::string& ex)
     {
-        qDebug() << "catch std::string";
+        qDebug() << "catch std::string&";
         cout << ex << endl;
     }
     catch (const char *ex)
@@ -92,6 +93,7 @@ int main(int argc, char *argv[])
     catch (...)
     {
         qDebug() << "catch ...";
+        qFatal("A very bad error occured. please contact www.dojoy.at");
     }
 
     return 1;

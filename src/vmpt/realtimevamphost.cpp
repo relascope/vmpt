@@ -26,7 +26,7 @@ RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, QStrin
     m_reader(reader),
     m_outputNo(-1)
 {
-    // TODOJOY Argument Checking and Error handling...
+    // TODO DoJoY Argument Checking and Error handling...
     if (m_libraryName.isNull() || m_libraryName.isEmpty())
         throw "Library name cannot be null or empty. ";
     if (m_pluginId.isNull() || m_pluginId.isEmpty())
@@ -67,7 +67,7 @@ void RealTimeVampHost::process()
         }
         else
         {
-            // TODOJOY step 3 is getting zeros at the beginning... (only if m_channels != 1)
+            // TODO DoJoY step 3 is getting zeros at the beginning... (only if m_channels != 1)
             memmove(readbuf, readbuf + (m_stepSize * m_channels),
                     m_overlapSize * m_channels * sizeof(float));
             if ((readCount = this->m_reader.readFloat(readbuf + (m_overlapSize * m_channels), m_stepSize)) < 0)

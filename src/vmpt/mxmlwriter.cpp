@@ -11,7 +11,7 @@
 using namespace MusicXML2;
 using std::string;
 
-// TODOJOY DUPLICATE DEFINITION WITH FILETOSCORE
+// TODO DoJoY DUPLICATE DEFINITION WITH FILETOSCORE
 #define DIVISION_PER_QUARTER	4
 
 //------------------------------------------------------------------------
@@ -106,7 +106,7 @@ static Sxmlelement makemeasure(unsigned long num) {
 
         note->push (pitch);											// adds the pitch to the note
         note->push (newElementI(k_duration, DIVISION_PER_QUARTER));				// sets the note duration to a quarter note
-        // TODOJOY is this needed?
+        // TODO DoJoY is this needed?
 //        note->push (newElement(k_type, "quarter"));					// creates the graphic elements of the note
 
 
@@ -220,14 +220,14 @@ void MXMLWriter::addNote(QString step, int octave, int duration)
 
     noteElem->push(pitch);
     noteElem->push(newElementI(k_duration, duration));
-//            // TODOJOY is this needed?
+//            // TODO DoJoY is this needed?
 //    noteElem->push(newElement(k_type, "quarter"));
 
     measure->push(noteElem);
 
     measureFill += duration;
 
-    // TODOJOY CHECK FOR DURATION OF NOTE!!! CAN IT BE ADDED? SPLIT!!
+    // TODO DoJoY CHECK FOR DURATION OF NOTE!!! CAN IT BE ADDED? SPLIT!!
 
     if ((int)measureFill >= DIVISION_PER_QUARTER  * 4)
     {

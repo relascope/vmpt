@@ -29,9 +29,9 @@ typedef std::function<void(Plugin::FeatureList* features)> cbFeaturesAvailable;
  */
 class RealTimeVampHost
 {
-    // TODOJOY eventually refactor /output to a new constructor
+    // TODO DoJoY eventually refactor /output to a new constructor
     // or property
-    // TODOJOY useFrames default to false and a setter.
+    // TODO DoJoY useFrames default to false and a setter.
 public:
     RealTimeVampHost(QString libraryName, QString pluginId,
                      QString output, bool useFrames,

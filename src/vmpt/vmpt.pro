@@ -4,12 +4,8 @@
 #
 #-------------------------------------------------
 
-#QMAKE_CXXFLAGS += -Werror
-
-
 QT  += core
 QT  -= gui
-QT  += multimedia
 
 TARGET = vmpt
 CONFIG   += console
@@ -19,6 +15,13 @@ TEMPLATE = app
 
 LIBS += -lboost_program_options
 
+#QMAKE_CXXFLAGS += -Werror
+QMAKE_CXXFLAGS += -pedantic
+QMAKE_CXXFLAGS += -Wall
+
+#main kept here
 SOURCES += main.cpp \
 
+#split all other files to include, to be included
+#in test project, e.g.
 include(vmpt.pri)
