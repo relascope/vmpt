@@ -56,12 +56,32 @@ mkdir ~/vamp
 cp cepstral-pitchtracker.so ~/vamp/
 cd ..
 echo finnally installing vmpt
-sudo apt-get --yes --force-yes install libsndfile1-dev libvamp-hostsdk3 qtbase5-dev qtmultimedia5-dev
+sudo apt-get --yes --force-yes install libsndfile1-dev libvamp-hostsdk3 qtbase5-dev 
+#may not be needed later (QCommandlineParser!)
+sudo apt-get --yes --force-yes install libboost-program-options-dev
+#may be needed sometime... (Microphone)
+#sudo apt-get --yes --force-yes install qtmultimedia5-dev qtmobility-dev
 
+
+
+#VMPT
+echo building VMPT
 cd ./src/vmpt
 QT_SELECT=5 qmake
 QT_SELECT=5 make
 
+#Tests
+echo building tests
+cd ..
+cd ..
+cd test
+cd vmpt-test
+QT_SELECT=5 qmake
+QT_SELECT=5 make
+
+#run tests
+echo running tests
+./vmpt-test
 
 
 
