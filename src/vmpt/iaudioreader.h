@@ -15,6 +15,7 @@ public:
         int samplerate;
     } AUDIO_INFO;
 
+    // TODO DOJOY rename to... getAudioInfo
     virtual AUDIO_INFO getFileInfo() = 0;
     virtual ~IAudioReader() {}
 };

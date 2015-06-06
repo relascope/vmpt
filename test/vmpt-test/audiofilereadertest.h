@@ -4,117 +4,74 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
+#include "testrunner.h"
+#include "testhelper.h"
 
-#include <QCoreApplication>
-#include <QDir>
+#include "sndfileaudioreader.h"
+#include "rawfileaudioreader.h"
 
+class AudioFileReaderTest : public QObject
+{
+    Q_OBJECT
+private slots:
+    void testConstruction() {
 
+        auto readerS1 = SndFileAudioReader::create(getOneChannelFileName());
+        auto readerS2 = SndFileAudioReader::create(getTwoChannelFileName());
 
-//class AudioFileReaderTest : public QObject
-//{
-//    Q_OBJECT
-//private slots:
+        auto readerR1 = RawFileAudioReader::create(getOneChannelFileName());
+        auto readerR2 = RawFileAudioReader::create(getTwoChannelFileName());
+    }
 
-//    void testDestructor() {
-//        AudioFileReader reader(""), *preader;
+    void readOneChannelFile() {
+        std::unique_ptr<IAudioReader> reader = SndFileAudioReader::create(getOneChannelFileName());
+        IAudioReader::AUDIO_INFO audioInfo = reader->getFileInfo();
 
-//        preader = new AudioFileReader("");
+        QCOMPARE(audioInfo.channels, 1);
 
-//        delete preader;
-//    }
+        int size = 1024;
+        float *buffer = new float[size];
+        int readSize = reader->readFloat(buffer, size);
 
-//    void testWavTwoChannels() {
-//        QString file = getAudioDir().absoluteFilePath("fini2.wav");
+        QVERIFY2(readSize > 0, "Could not read from file");
 
-//        AudioFileReader reader(file);
+        delete [] buffer;
+    }
 
-//        AudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
+    void readTwoChannelFile() {
+        std::unique_ptr<IAudioReader> reader = SndFileAudioReader::create(getTwoChannelFileName());
+        IAudioReader::AUDIO_INFO audioInfo = reader->getFileInfo();
 
-//        QVERIFY2(fileInfo.channels == 2, "channel count mismatch");
+        QCOMPARE(audioInfo.channels, 2);
 
-//        // get some data (100k)
-//        int size = 100000 / sizeof(float);
-//        float *buffer = new float[size];
-//        int readSize = reader.ReadFloat(buffer, size);
+        int size = 1024;
+        float *buffer = new float[size];
+        int readSize = reader->readFloat(buffer, size);
 
-//        QVERIFY2(readSize == size, "couldn't read audio file");
+        QVERIFY2(readSize > 0, "Could not read from file");
 
-////        delete[] buffer;
+//        delete [] buffer;
+    }
 
-//    }
+    void readTwoChannelFileCapsulated() {
+        int size = 1024;
+        float *buffer = new float[size];
 
-//    void testWavOneChannel() {
-//        QString file = getAudioDir().absoluteFilePath("fini1.wav");
+        {
+            std::unique_ptr<IAudioReader> reader = SndFileAudioReader::create(getTwoChannelFileName());
+        IAudioReader::AUDIO_INFO audioInfo = reader->getFileInfo();
 
-//        AudioFileReader reader(file);
+        QCOMPARE(audioInfo.channels, 2);
 
-//        AudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
+        int readSize = reader->readFloat(buffer, size);
 
-//        QVERIFY2(fileInfo.channels == 1, "channel count mismatch");
+        QVERIFY2(readSize > 0, "Could not read from file");
+        }
 
-//        // get some data (100k)
-//        int size = 100000 / sizeof(float);
-//        float *buffer = new float[size];
-//        int readSize = reader.ReadFloat(buffer, size);
+        delete [] buffer;
+    }
+};
 
-//        QVERIFY2(readSize == size, "couldn't read audio file");
-
-//        delete[] buffer;
-//    }
-
-
-//    void testRawOneChannel() {
-////        QVERIFY2(false, "NOT IMPLEMENTED");
-//    }
-//private:
-//    void testAudioFile(QString file, int expectedChannels) {
-////        AudioFileReader reader(file);
-
-////        AudioFileReader::AUDIO_FILE_INFO fileInfo = reader.opensnd();
-
-////        QVERIFY2(fileInfo.channels == expectedChannels, "channel count mismatch");
-
-
-//        AudioFileReader *preader = new AudioFileReader(file);
-//        preader->opensnd();
-
-//        float* filebuf = new float[1014 * expectedChannels];
-//        preader->ReadFloat(filebuf, 1024);
-
-////        delete [] filebuf;
-
-//        delete preader;
-
-////        float* filebuf = new float[1014 * expectedChannels];
-////        reader.ReadFloat(filebuf, 1024);
-
-
-////        // get some data (10k)
-////        int size = 10000 / sizeof(float);
-////        float *buffer = new float[size];
-//////        float buffer[size];
-////        int readSize = reader.ReadFloat(buffer, size);
-
-////        QVERIFY2(readSize == size, "couldn't read audio file");
-
-//////        while (reader.ReadFloat(buffer, 1024));
-
-//////        delete [] buffer;
-
-//    }
-
-//protected:
-
-//    QDir getAudioDir()
-//    {
-//        QDir appDir = QCoreApplication::applicationDirPath();
-
-//        appDir.cdUp();
-//        appDir.cdUp();
-//        appDir.cd("audio");
-
-//        return appDir;
-//    }
-//};
+//DECLARE_TEST(AudioFileReaderTest)
 
 #endif // AUDIOFILEREADERTEST_H
