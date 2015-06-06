@@ -24,7 +24,7 @@
 
 
 
-#include <QAudioInput>
+//#include <QAudioInput>
 #include <QByteArray>
 #include <QObject>
 
