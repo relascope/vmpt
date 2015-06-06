@@ -1,11 +1,13 @@
 #ifndef SNDFILETEST_H
 #define SNDFILETEST_H
 
-#include <QtTest/QtTest>
+#include <sndfile.hh>
 
+#include <QtTest/QtTest>
 #include <QDebug>
 
-#include <sndfile.hh>
+#include "testrunner.h"
+#include "testhelper.h"
 
 
 /**
@@ -19,58 +21,104 @@ class SndfileTest : public QObject
     Q_OBJECT
 
 private slots:
-    void testOpenClose(){
-        QString file("/home/dojoy/vmpt/audio/fini.wav");
 
-//        sndfile = new SndfileHandle();
-//        sndfile->
+    void testSndFileHandleOpenRead() {
+        QString file = getOneChannelFileName();
 
         SndfileHandle handle(file.toStdString());
-                    float* buffer = new float[1024];
 
-                    buffer = new float[1024];
+        float* buffer = new float[1024];
+        buffer = new float[1024];
+        int bytesRead = handle.readf(buffer, 1024);
 
-                    handle.readf(buffer, 1024);
-
-
-//        SF_INFO sfinfo;
-//        memset(&sfinfo, 0, sizeof(sfinfo));
-
-//        sndfile = sf_open(file.toStdString().c_str(), SFM_READ, &sfinfo);
-
-//        if (sndfile)
-//        {
-//            float* buffer = new float[1024];
-
-//            sf_readf_float(sndfile, buffer, 1024);
-
-
-//            delete[] buffer;
-
-//            sf_close(sndfile);
-//        } else {
-//            int len = 2048;
-//            char* buff = new char[len];
-//            sf_error_str(sndfile, buff, len);
-
-//            QString msg("Error loading file: ");
-//            msg += buff;
-
-//            qDebug() << msg << buff;
-
-//            QFAIL(msg.toStdString().c_str());
-//        }
-
+        QVERIFY2(bytesRead > 0, "Could not read bytes");
     }
+
+    void testSndFileHandleMemberPointer() {
+        QString file = getOneChannelFileName();
+
+        m_sndfile = new SndfileHandle(file.toStdString());
+
+        float* buffer = new float[1024];
+        buffer = new float[1024];
+        int bytesRead = m_sndfile->readf(buffer, 1024);
+
+        QVERIFY2(bytesRead > 0, "Could not read bytes");
+
+        delete m_sndfile;
+        m_sndfile = 0;
+    }
+
+    void testSndFileHandleLocalPointer() {
+        QString file = getOneChannelFileName();
+
+        SndfileHandle *sndfile = new SndfileHandle(file.toStdString());
+
+        float* buffer = new float[1024];
+        buffer = new float[1024];
+        int bytesRead = sndfile->readf(buffer, 1024);
+
+        QVERIFY2(bytesRead > 0, "Could not read bytes");
+
+        delete sndfile;
+        sndfile = 0;
+    }
+
+    /// tests with 2channel file  !!! COPY/PASTE FROM ABOVE
+
+    void testSndFileHandleOpenRead2() {
+        QString file = getTwoChannelFileName();
+
+        SndfileHandle handle(file.toStdString());
+
+        float* buffer = new float[1024];
+        buffer = new float[1024];
+        int bytesRead = handle.readf(buffer, 1024);
+
+        QVERIFY2(bytesRead > 0, "Could not read bytes");
+    }
+
+    void testSndFileHandleMemberPointer2() {
+        QString file = getTwoChannelFileName();
+
+        m_sndfile = new SndfileHandle(file.toStdString());
+
+        float* buffer = new float[1024];
+        buffer = new float[1024];
+        int bytesRead = m_sndfile->readf(buffer, 1024);
+
+        QVERIFY2(bytesRead > 0, "Could not read bytes");
+
+        delete m_sndfile;
+        m_sndfile = 0;
+    }
+
+    void testSndFileHandleLocalPointer2() {
+        QString file = getTwoChannelFileName();
+
+        SndfileHandle *sndfile = new SndfileHandle(file.toStdString());
+
+        float* buffer = new float[1024];
+        buffer = new float[1024];
+        int bytesRead = sndfile->readf(buffer, 1024);
+
+        QVERIFY2(bytesRead > 0, "Could not read bytes");
+
+        delete sndfile;
+        sndfile = 0;
+    }
+
+
 public:
-    SndfileHandle* sndfile = 0;
+    SndfileHandle* m_sndfile = 0;
 
     virtual  ~SndfileTest() {
-        if (sndfile)
-            delete sndfile;
+        if (m_sndfile)
+            delete m_sndfile;
     }
 };
 
+//DECLARE_TEST(SndfileTest)
 
 #endif // SNDFILETEST_H
 

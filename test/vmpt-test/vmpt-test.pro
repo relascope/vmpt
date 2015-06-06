@@ -16,6 +16,11 @@ TARGET = vmpt-test
 CONFIG   += console
 CONFIG   -= app_bundle
 
+QMAKE_CXXFLAGS += -pedantic
+QMAKE_CXXFLAGS += -Wall
+QMAKE_CXXFLAGS += -Wextra
+
+
 TEMPLATE = app
 
 INCLUDEPATH += ../../src/vmpt/
@@ -23,15 +28,15 @@ INCLUDEPATH += ../../src/vmpt/
 
 SOURCES += \
     main.cpp \
-    sndfileallinclusive.cpp
+    testhelper.cpp
 
 HEADERS += \
     transcribetest.h \
     audiofilereadertest.h \
     testrunner.h \
     sndfiletest.h \
-    sndfiletesthh.h \
-    sndfileallinclusive.h
+    integrationreadonetwochannels.h \
+    testhelper.h
 
 
 include(../../src/vmpt/vmpt.pri)

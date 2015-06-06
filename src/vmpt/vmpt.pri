@@ -15,7 +15,8 @@ SOURCES += \
     $$PWD/sndfileaudioreader.cpp \
     $$PWD/rawfileaudioreader.cpp \
     $$PWD/audioreaderfactory.cpp \
-    $$PWD/generatescore.cpp
+    $$PWD/generatescore.cpp \
+    $$PWD/helpers.cpp
 
 HEADERS += \
     $$PWD/realtimevamphost.h \
@@ -26,4 +27,5 @@ HEADERS += \
     $$PWD/sndfileaudioreader.h \
     $$PWD/rawfileaudioreader.h \
     $$PWD/audioreaderfactory.h \
-    $$PWD/generatescore.h
+    $$PWD/generatescore.h \
+    $$PWD/helpers.h

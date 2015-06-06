@@ -5,6 +5,9 @@
 
 #include <QtMath>
 
+#include "testrunner.h"
+
+#include "transcribehelper.h"
 
 /**
  * @brief The TranscribeTest class
@@ -38,46 +41,16 @@ private slots:
 
         QCOMPARE(getOctave(261.6256), 4);
         QCOMPARE(getOctave(130.81), 3);
-
     }
 
 private:
     int getOctave(float frequency)
     {
-        int octave = 4; // octave of standard pitch (a)
-
-        // 440 * 2 ^(noteabstandvona/12) = freq
-        qreal c4freq = 440 * qPow(2, -9.5/12.);
-
-        if (frequency < c4freq)
-        {
-            do
-            {
-                octave--;
-                frequency *= 2.;
-            } while (frequency < c4freq);
-
-            return octave;
-        }
-
-
-        while (frequency > c4freq)
-        {
-            octave++;
-            frequency /= 2.;
-        }
-        octave--;
-
-        return octave;
+        return TranscribeHelper().getOctaveFromFreq(frequency);
     }
-
-    qreal qLog2(qreal n)
-    {
-        return qLn(n) / qLn(2);
-    }
-
 };
 
+DECLARE_TEST(TranscribeTest)
 
 #endif // TRANSCRIBETEST_H
 
