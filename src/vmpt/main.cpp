@@ -1,136 +1,100 @@
-#include <QCoreApplication>
+#include "generatescore.h"
 
 #include <QDebug>
 
+#include <boost/program_options.hpp>
 
-#include <QFile>
-#include <QDir>
+namespace po = boost::program_options;
+using std::cout;
+using std::endl;
+using std::string;
 
-#include <realtimevamphost.h>
-#include "filetoscore.h"
-
-#include <time.h>
-#include <math.h>
-
-#include "debughelper.h"
-
-
-#include <QtMath>
-
-QDir getAudioDir()
+void printVersion(const char *prog)
 {
-    QDir appDir = QCoreApplication::applicationDirPath();
-
-    appDir.cdUp();
-    appDir.cdUp();
-    appDir.cd("audio");
-
-    return appDir;
+    cout << prog << " version not defined..." << endl;
+    cout << "Ask PiTra" << endl;
+    cout << "www.dojoy.at" << endl;
 }
 
-int wavheadersize(QString fileName){
-
-    char b[4];
-    QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
-
-    file.seek(16);
-
-    file.read(b, 4);
-    file.close();
-
-    // little endian
-//    int Subchunk1Size2 = (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | (b[3]);
-            // big endian??
-    int Subchunk1Size = (b[3] << 24) | (b[2] << 16) | (b[1] << 8) | (b[0]);
-
-    if (Subchunk1Size < 16)
-        throw "no valid wav file";
-    else
-    {
-        switch (Subchunk1Size)
-        {
-        case 16:
-            return 44;
-        case 18:
-            return 46;
-        default:
-            throw "Header contains extra data and is larger than 46 bytes";
-            break;
-        }
-    }
-
-    ASSERT(false)
-
-    return 0;
-}
-
-void testOneTwoChannels()
+void printHelp(const char *prog, po::options_description desc)
 {
-    QDir audioDir = getAudioDir();
-
-    QString file1 = audioDir.absoluteFilePath("fini1.wav");
-    QString file2 = audioDir.absoluteFilePath("fini.wav");
-
-    qDebug() << "read file with TWO channels ... ";
-    SoundFile(file2).toMusicXML("/tmp/fini2.xml");
-
-    qDebug() << "read file with ONE channel ... ";
-    SoundFile(file1).toMusicXML("/tmp/fini1.xml");
-
-
-    // TODOJOY ASSERT ARE IDENTICAL!!!
-    // MOVE TO TEST
-
-    QFile f1("/tmp/fini1.xml");
-    QFile f2("/tmp/fini2.xml");
-
-
-    f1.open(QIODevice::ReadOnly);
-    f2.open(QIODevice::ReadOnly);
-
-    QByteArray bytes1 = f1.readAll();
-    QByteArray bytes2 = f2.readAll();
-
-    ASSERT(bytes1.size() == bytes2.size())
-
-    for (qint64 i = 0; i < bytes1.size(); i++)
-    {
-        if (bytes1.at(i) != bytes2.at(i))
-            throw "MusicXML not equivalent for different channels ";
-    }
-}
-#include <QThread>
-
-void testRecord()
-{
-    InputTest audiotest;
-
-    qDebug() << "start record ";
-    audiotest.createAudioInputAndStart();
-
-    QThread::msleep(5000);
-
-    audiotest.stop();
-
-    qDebug() << "stopped recording ";
-
+    cout << "Usage: " << prog << " InputAudioFile OutputMusicXmlScoreFile" << endl;
+    cout << desc << endl;
 }
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    // TODO DoJoY bad style to catch them all here...
+    try
+    {
+        // TODO DoJoY QCommandlineParser could be used... our framework...
+        po::options_description desc("Allowed options");
 
-    testOneTwoChannels();
-    qDebug() << "test succeeded! ";
+        desc.add_options()
+                ("inputaudiofile,i", po::value<string>(), "audio input file")
+                ("outputmusicxmlscorefile,o", po::value<string>(), "music xml score output file")
+                ("help,h", "produce help message")
+                ("version,v", "print version string")
+                ;
+
+        po::positional_options_description posopt;
+        posopt.add("inputaudiofile", 1);
+        posopt.add("outputmusicxmlscorefile", 1);
 
 
-//    SoundFile().fromFile("/tmp/testfloat.raw").toMusicXML("/tmp/raw.xml");
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc, argv).
+                  options(desc).positional(posopt).run(), vm);
 
+        po::notify(vm);
 
-//    testRecord();
+        if (vm.count("help")) {
+            printHelp(argv[0], desc);
+            return 1;
+        }
 
-//    SoundFile().fromMicrophone(5).toMusicXML("/tmp/mic.xml");
+        if (vm.count("version")) {
+            printVersion(argv[0]);
+            return 1;
+        }
 
-    return a.exec();
+        if (vm.count("inputaudiofile") && vm.count("outputmusicxmlscorefile")) {
+            QString inputAudioFile = QString::fromStdString(vm["inputaudiofile"].as<string>());
+            QString outputMusicXMLScoreFile = QString::fromStdString(vm["outputmusicxmlscorefile"].as<string>());
+
+            GenerateScore().fromAudioFile(inputAudioFile).toMusicXML(outputMusicXMLScoreFile);
+        } else {
+            printHelp(argv[0], desc);
+            return 1;
+        }
+
+        return 0;
+    }
+    catch (std::exception& ex)
+    {
+        qDebug() << "catch std::exception&";
+        cout << ex.what() << endl;
+    }
+    catch (QString& ex)
+    {
+        qDebug() << "catch QString&";
+        cout << ex.toStdString() << endl;
+    }
+    catch (std::string& ex)
+    {
+        qDebug() << "catch std::string&";
+        cout << ex << endl;
+    }
+    catch (const char *ex)
+    {
+        qDebug() << "catch const char *";
+        cout << ex << endl;
+    }
+    catch (...)
+    {
+        qDebug() << "catch ...";
+        qFatal("A very bad error occured. please contact www.dojoy.at");
+    }
+
+    return 1;
 }

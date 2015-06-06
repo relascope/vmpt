@@ -34,25 +34,4 @@ HEADERS += \
     sndfileallinclusive.h
 
 
-# TODOJOY copy paste from vmpt without main.pp
-
-LIBS += -lvamp-hostsdk
-LIBS += -lmusicxml2
-LIBS += -lsndfile
-
-SOURCES += \
-    ../../src/vmpt/realtimevamphost.cpp \
-    ../../src/vmpt/mxmlwriter.cpp \
-    ../../src/vmpt/filetoscore.cpp \
-    ../../src/vmpt/transcribehelper.cpp \
-    ../../src/vmpt/debughelper.cpp \
-    ../../src/vmpt/audiofilereader.cpp
-
-HEADERS += \
-    ../../src/vmpt/realtimevamphost.h \
-    ../../src/vmpt/debughelper.h \
-    ../../src/vmpt/mxmlwriter.h \
-    ../../src/vmpt/filetoscore.h \
-    ../../src/vmpt/transcribehelper.h \
-    ../../src/vmpt/audiofilereader.h \
-    ../../src/vmpt/readfloatinterface.h
+include(../../src/vmpt/vmpt.pri)

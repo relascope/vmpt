@@ -13,7 +13,7 @@
 
 #include <QString>
 
-#include "readfloatinterface.h"
+#include "iaudioreader.h"
 #include "debughelper.h"
 
 using Vamp::Plugin;
@@ -29,14 +29,13 @@ typedef std::function<void(Plugin::FeatureList* features)> cbFeaturesAvailable;
  */
 class RealTimeVampHost
 {
-    // TODOJOY eventually refactor /output to a new constructor
+    // TODO DoJoY eventually refactor /output to a new constructor
     // or property
-    // TODOJOY useFrames default to false and a setter.
+    // TODO DoJoY useFrames default to false and a setter.
 public:
     RealTimeVampHost(QString libraryName, QString pluginId,
-                     float inputSampleRate, int channels,
                      QString output, bool useFrames,
-                     ReadFloatInterface& reader);
+                     IAudioReader& reader);
     virtual ~RealTimeVampHost();
 
     /**
@@ -61,7 +60,7 @@ protected:
 
     bool m_useFrames;
 
-    ReadFloatInterface& m_reader;
+    IAudioReader& m_reader;
 private:
     Plugin *m_plugin;
 
@@ -75,11 +74,9 @@ private:
 
 private:
     /**
-      * Ported from vamp-hostsdk host example
-      *
-      * */
-    DEPRECATED int runPlugin();
-    DEPRECATED void printFeatures(int frame, int sr, int output,
+      * FROM VAMP-HOSTSDK HOST EXAMPLE
+      */
+    void printFeatures(int frame, int sr, int output,
                   Plugin::FeatureSet features, bool useFrames);
 
 };

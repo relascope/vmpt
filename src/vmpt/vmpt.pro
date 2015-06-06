@@ -6,34 +6,22 @@
 
 QT  += core
 QT  -= gui
-QT  += multimedia
 
 TARGET = vmpt
 CONFIG   += console
 CONFIG   -= app_bundle
 
-CONFIG += c++11
-
 TEMPLATE = app
 
+LIBS += -lboost_program_options
 
-LIBS += -lvamp-hostsdk
-LIBS += -lmusicxml2
-LIBS += -lsndfile
+#QMAKE_CXXFLAGS += -Werror
+QMAKE_CXXFLAGS += -pedantic
+QMAKE_CXXFLAGS += -Wall
 
+#main kept here
 SOURCES += main.cpp \
-    realtimevamphost.cpp \
-    mxmlwriter.cpp \
-    filetoscore.cpp \
-    transcribehelper.cpp \
-    debughelper.cpp \
-    audiofilereader.cpp
 
-HEADERS += \
-    realtimevamphost.h \
-    debughelper.h \
-    mxmlwriter.h \
-    filetoscore.h \
-    transcribehelper.h \
-    audiofilereader.h \
-    readfloatinterface.h
+#split all other files to include, to be included
+#in test project, e.g.
+include(vmpt.pri)
