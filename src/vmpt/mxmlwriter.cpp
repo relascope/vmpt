@@ -2,6 +2,10 @@
 
 #include "debughelper.h"
 
+#include <fstream>
+
+#include <QDebug>
+
 #include <libmusicxml/elements.h>
 #include <libmusicxml/factory.h>
 #include <libmusicxml/xml.h>
@@ -175,9 +179,9 @@ static Sxmlelement makeScore() {
 MXMLWriter::MXMLWriter(QString fileName) :
     m_fileName(fileName)
 {
-    f = TXMLFile::create();
-    f->set(new TXMLDecl("1.0", "", TXMLDecl::kNo));
-    f->set(new TDocType("score-partwise"));
+    m_xmlFile = TXMLFile::create();
+    m_xmlFile->set(new TXMLDecl("1.0", "", TXMLDecl::kNo));
+    m_xmlFile->set(new TDocType("score-partwise"));
 
 
     score = makeScore();
@@ -243,18 +247,19 @@ void MXMLWriter::finish()
         part->push(measure);
 
     score->push(part);			// adds a part to the score
-    f->set(score);
+    m_xmlFile->set(score);
 
-    m_outStream.open(m_fileName.toStdString().c_str());
-    f->print(m_outStream);
+    std::ofstream outStream;
+    outStream.open(m_fileName.toStdString().c_str());
 
-    m_outStream << std::flush;
-    m_outStream.close();
+    // TODO prints to stdout ("whitechars")...
+    m_xmlFile->print(outStream);
+
+    outStream << std::flush;
+    outStream.close();
 }
 
 MXMLWriter::~MXMLWriter()
 {
-    if (m_outStream.is_open())
-        m_outStream.close();
 }
 

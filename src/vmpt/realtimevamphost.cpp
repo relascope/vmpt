@@ -129,6 +129,14 @@ void RealTimeVampHost::process()
                   remainingFeatures, m_useFrames);
     }
 
+    // TODO delete also on error conditions!!!
+    delete [] readbuf;
+
+    for (int i=0;i<m_channels;i++)
+        delete [] plugbuf[i];
+
+    delete [] plugbuf;
+
     qDebug() << "Processing done.";
 }
 

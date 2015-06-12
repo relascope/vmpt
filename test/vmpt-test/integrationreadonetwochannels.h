@@ -46,6 +46,9 @@ private slots:
 
         ASSERT(bytes1.size() == bytes2.size())
 
+        QVERIFY2(bytes1.size() > 0, "no bytes written for ONE channel Score");
+        QVERIFY2(bytes2.size() > 0, "no bytes written for TWO channel Score");
+
         for (qint64 i = 0; i < bytes1.size(); i++)
         {
             QVERIFY2(bytes1.at(i) == bytes2.at(i), "Result file not identical!");

@@ -7,8 +7,6 @@
 #include <libmusicxml/xmlfile.h>
 
 
-#include<fstream>
-
 #include <QString>
 
 
@@ -25,12 +23,11 @@ public:
 
 private:
     QString m_fileName;
-    std::ofstream m_outStream;
 
     Sxmlelement score;
     Sxmlelement part;
     Sxmlelement measure;
-    SXMLFile f;
+    SXMLFile m_xmlFile;
 
     int positionInMeasure = 0;
     int measureCount = 1;
