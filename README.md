@@ -13,10 +13,10 @@ and the VAMP Plugin Cepstral Pitch Track, which are used here.
 
 Code copyright 2015 Günther Humer
 
-VMPT is free software; you can redistribute it and/or modify
+VMPT is non-free software; you can not redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or (at
-your option) any later version.  See the file COPYING included with
+your option) any later version. See the file COPYING included with
 this distribution for more information. 
 
 VMPT uses the following libraries
