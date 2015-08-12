@@ -15,6 +15,8 @@ Run VMPT
 ================================================
 vmpt InputAudioFile OutputMusicXmlScoreFile
 
+The OutputMusicXmlScoreFile can be viewed/edited in MuseScore, a free scorewriter. 
+
 Credits
 ================================================
 VMPT was started by Günther Humer (www.dojoy.at). 
@@ -32,7 +34,7 @@ VMPT uses the following libraries
  * libmusicxml - MPL2.0
  * Boost C++ libraries - Boost Software License
 
-Code copyright 2015 Günther Humer
+Copyright 2015 Günther Humer
 ================================================
 VMPT is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

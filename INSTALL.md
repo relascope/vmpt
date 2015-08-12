@@ -1,17 +1,17 @@
-VMPT - virtual music power transcriber (teacher)
+VMPT virtual music power transcriber/teacher
 ================================================
-transcribes music (from audio) to MusicXML
-
-
-
+VMPT PeNny notates music notes from an audio file. 
+The file can be saved and viewed in common Notation Programs. 
+Most Audio Files are supported. 
 
 Dependencies
-------------------------------------------------
+================================================
  * QT5.4 (https://www.qt.io/download/)
  * vamp-hostsdk (http://www.vamp-plugins.org/develop.html)
  * Cepstral Pitch Tracker (https://code.soundsoftware.ac.uk/projects/cepstral-pitchtracker)
  * sndfile (http://www.mega-nerd.com/libsndfile/)
  * libmusicxml (https://code.google.com/p/libmusicxml/)
+ * libboost-program-options-dev (http://www.boost.org)
 
 sudo apt-get install build-essential libsndfile1-dev libvamp-hostsdk3
 
@@ -98,4 +98,10 @@ QT_SELECT=5 make
 RUN
 ./vmpt
 
-
+Copyright 2015 Günther Humer
+================================================
+VMPT is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.  See the file COPYING included with
+this distribution for more information. 
