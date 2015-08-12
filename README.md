@@ -6,9 +6,9 @@ Most Audio Files are supported.
 
 Features
 ================================================
- * Transcribe Note Pitch
- * Monophonic Audio
  * Console UI
+ * Read Monophonic Audio
+ * Transcribe Note Pitch
  * Save as MusicXML
 
 Run VMPT
