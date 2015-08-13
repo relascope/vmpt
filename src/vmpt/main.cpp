@@ -11,13 +11,14 @@ using std::string;
 
 void printVersion(const char *prog)
 {
-    cout << prog << " version not defined..." << endl;
-    cout << "Ask PiTra" << endl;
-    cout << "www.dojoy.at" << endl;
+    cout << prog << "PeNny version 0.1" << endl;
+    cout << "(c) Günther Humer" << endl;
+    cout << "http://www.dojoy.at" << endl;
 }
 
 void printHelp(const char *prog, po::options_description desc)
 {
+    printVersion(prog);
     cout << "Usage: " << prog << " InputAudioFile OutputMusicXmlScoreFile" << endl;
     cout << desc << endl;
 }
@@ -93,7 +94,7 @@ int main(int argc, char *argv[])
     catch (...)
     {
         qDebug() << "catch ...";
-        qFatal("A very bad error occured. please contact www.dojoy.at");
+        qFatal("A very bad error occured. please contact http://www.dojoy.at");
     }
 
     return 1;
