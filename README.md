@@ -10,6 +10,14 @@ Features
  * Read Monophonic Audio
  * Transcribe Note Pitch
  * Save as MusicXML
+ 
+Limitations
+------------------------------------------------
+ * no alterations
+ 
+Known Bugs
+------------------------------------------------
+ * playing the same note twice can be interpreted as one long note
 
 Run VMPT
 ================================================
@@ -26,7 +34,7 @@ Queen Mary, University of London), who developed the VAMP Plugin Architecture
 and the VAMP Plugin Cepstral Pitch Track, which are used here. 
 
 VMPT uses the following libraries
- 
+------------------------------------------------ 
  * QT5 - copyright (c) 2015 Digia Plc, LGPL
  * Vamp Host SDK - copyright (c) 2005-2009 Chris Cannam and QMUL, permissive BSD-style license
  * Cepstral Pitch Tracker - copyright (c) 2012 Chris Cannam, permissive license
