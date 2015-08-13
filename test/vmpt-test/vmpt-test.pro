@@ -32,9 +32,7 @@ SOURCES += \
 
 HEADERS += \
     transcribetest.h \
-    audiofilereadertest.h \
     testrunner.h \
-    sndfiletest.h \
     integrationreadonetwochannels.h \
     testhelper.h
 
