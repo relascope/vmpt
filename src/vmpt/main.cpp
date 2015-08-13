@@ -11,12 +11,14 @@ using std::string;
 
 void printVersion(const char *prog)
 {
-    cout << prog << "vmpt PeNny version 0.1" << endl;
+    cout << prog << "PeNny version 0.1" << endl;
+    cout << "(c) Günther Humer" << endl;
     cout << "http://www.dojoy.at" << endl;
 }
 
 void printHelp(const char *prog, po::options_description desc)
 {
+    printVersion(prog);
     cout << "Usage: " << prog << " InputAudioFile OutputMusicXmlScoreFile" << endl;
     cout << desc << endl;
 }
