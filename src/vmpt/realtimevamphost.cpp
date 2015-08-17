@@ -1,12 +1,10 @@
 #include "realtimevamphost.h"
 
-#include <QDebug>
-
 #include <vamp-hostsdk/PluginLoader.h>
 #include <vamp-hostsdk/PluginInputDomainAdapter.h>
 
 #include <sndfile.h>
-
+#include <string.h>
 
 using Vamp::HostExt::PluginLoader;
 using Vamp::HostExt::PluginWrapper;
@@ -15,7 +13,7 @@ using Vamp::HostExt::PluginInputDomainAdapter;
 
 using namespace std;
 
-RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, QString output, bool useFrames,
+RealTimeVampHost::RealTimeVampHost(string libraryName, string pluginId, string output, bool useFrames,
                     IAudioReader &reader) :
     m_libraryName(libraryName),
     m_pluginId(pluginId),
@@ -27,10 +25,10 @@ RealTimeVampHost::RealTimeVampHost(QString libraryName, QString pluginId, QStrin
     m_outputNo(-1)
 {
     // TODO DoJoY Argument Checking and Error handling...
-    if (m_libraryName.isNull() || m_libraryName.isEmpty())
-        throw "Library name cannot be null or empty. ";
-    if (m_pluginId.isNull() || m_pluginId.isEmpty())
-        throw "Plugin ID cannot be null or empty. ";
+    if (m_libraryName.empty())
+        throw std::string("Library name cannot be null or empty. ");
+    if (m_pluginId.empty())
+        throw std::string("Plugin ID cannot be null or empty. ");
 
     initialisePlugin();
 }
@@ -45,7 +43,7 @@ void RealTimeVampHost::process()
         plugbuf[c] = new float[m_blockSize + 2];
     }
 
-    qint64 currentStep = 0;
+    long currentStep = 0;
     int finalStepsRemaining = std::max(1, (m_blockSize/m_stepSize) -1);
 
     do
@@ -114,7 +112,7 @@ void RealTimeVampHost::process()
         currentStep++;
     } while (finalStepsRemaining > 0);
 
-    qDebug() << "Remaining features...";
+    std::cout << "Remaining features..." << std::endl;
 
     RealTime rt = RealTime::frame2RealTime(currentStep * m_stepSize, m_inputSampleRate);
     Plugin::FeatureSet remainingFeatures = m_plugin->getRemainingFeatures();
@@ -137,7 +135,7 @@ void RealTimeVampHost::process()
 
     delete [] plugbuf;
 
-    qDebug() << "Processing done.";
+    std::cout << "Processing done." << std::endl;
 }
 
 
@@ -145,7 +143,7 @@ void RealTimeVampHost::initialisePlugin()
 {
     PluginLoader *loader = PluginLoader::getInstance();
     PluginLoader::PluginKey key =
-            loader->composePluginKey(m_libraryName.toStdString(), m_pluginId.toStdString());
+            loader->composePluginKey(m_libraryName, m_pluginId);
 
     int adapterFlags = PluginLoader::ADAPT_ALL_SAFE;
     m_plugin = loader->loadPlugin(key, m_inputSampleRate, adapterFlags);
@@ -196,7 +194,7 @@ void RealTimeVampHost::initialisePlugin()
 
     for (size_t oi = 0; oi <  outputs.size(); oi++)
     {
-        if (outputs[oi].identifier == m_output.toStdString())
+        if (outputs[oi].identifier == m_output)
         {
             m_outputNo = oi;
             break;
@@ -224,7 +222,7 @@ void RealTimeVampHost::initialisePlugin()
         }
     }
 
-    qDebug() << QString("Plugin %1 loaded and initialised successfully... ").arg(m_pluginId);
+    std::cout << "Plugin " << m_pluginId << "loaded and initialised successfully... " << std::endl;
 }
 
 RealTimeVampHost::~RealTimeVampHost()

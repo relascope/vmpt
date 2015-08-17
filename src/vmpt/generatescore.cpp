@@ -4,22 +4,18 @@
 #include "transcribehelper.h"
 #include "audioreaderfactory.h"
 
-
-#include <QDebug>
-
-
 GenerateScore::GenerateScore()
   : m_inputType(UNDEFINED)
 {
 }
 
-GenerateScore::GenerateScore(QString soundFileInput)
+GenerateScore::GenerateScore(string soundFileInput)
   : m_soundFileInput(soundFileInput)
   , m_inputType(LOCAL_FILE)
 {
 }
 
-GenerateScore& GenerateScore::fromAudioFile(QString soundFileInput)
+GenerateScore& GenerateScore::fromAudioFile(std::string soundFileInput)
 {
     m_inputType = LOCAL_FILE;
     m_soundFileInput = soundFileInput;
@@ -27,9 +23,9 @@ GenerateScore& GenerateScore::fromAudioFile(QString soundFileInput)
     return *this;
 }
 
-void GenerateScore::fileToScore(QString mxmlFileOutput)
+void GenerateScore::fileToScore(std::string mxmlFileOutput)
 {
-    m_outputxml = new MXMLWriter(mxmlFileOutput.toStdString().c_str());
+    m_outputxml = new MXMLWriter(mxmlFileOutput.c_str());
 
     auto audioReader = AudioReaderFactory::create(m_soundFileInput);
 
@@ -47,7 +43,7 @@ void GenerateScore::fileToScore(QString mxmlFileOutput)
     m_outputxml = 0;
 }
 
-void GenerateScore::toMusicXML(QString mxmlFileOutput)
+void GenerateScore::toMusicXML(std::string mxmlFileOutput)
 {
     switch(m_inputType)
     {
@@ -61,9 +57,6 @@ void GenerateScore::toMusicXML(QString mxmlFileOutput)
 
 void GenerateScore::collectFeatures(Plugin::FeatureList *features)
 {
-
-    qDebug() << "Features!! ";
-
     for (Plugin::Feature feature : *features)
     {
         std::cout << std::endl;
@@ -143,7 +136,7 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
     // TODO DoJoY HACK if calculation breaks, you can go back to using quarters only.
     mxmlDuration = DIVISION_PER_QUARTER;
 
-    QString note = TranscribeHelper().getNoteFromFreq(val);
+    string note = TranscribeHelper().getNoteFromFreq(val);
 
     int octave = TranscribeHelper().getOctaveFromFreq(val);
 
