@@ -18,7 +18,6 @@ LIBS += -lboost_program_options
 #QMAKE_CXXFLAGS += -Werror
 QMAKE_CXXFLAGS += -pedantic
 QMAKE_CXXFLAGS += -Wall
-QMAKE_CXXFLAGS += -Wextra
 
 #main kept here
 SOURCES += main.cpp \
