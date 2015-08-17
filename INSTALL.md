@@ -8,7 +8,7 @@ Dependencies
 ================================================
  * QT5.4 (https://www.qt.io/download/)
  * vamp-hostsdk (http://www.vamp-plugins.org/develop.html)
- * Cepstral Pitch Tracker (https://code.soundsoftware.ac.uk/projects/cepstral-pitchtracker)
+ * pYIN (probablistic YIN) - Centre for Digital Music, Queen Mary, University of London, GPL
  * sndfile (http://www.mega-nerd.com/libsndfile/)
  * libmusicxml (https://code.google.com/p/libmusicxml/)
  * libboost-program-options-dev (http://www.boost.org)

@@ -24,14 +24,14 @@ Contribute
 ================================================
 learn git :-)
 The master branch is a release branch. 
-The development branch is where the work for the next release is done. 
+The develop branch is where the work for the next release is done. 
 
 Read CLA.md. 
 
 Copyright 2015 Günther Humer
 ================================================
 VMPT is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or (at
+it under the terms of the GNU Affero General Public License as published 
+by the Free Software Foundation; either version 2 of the License, or (at
 your option) any later version.  See the file COPYING included with
 this distribution for more information. 

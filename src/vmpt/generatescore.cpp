@@ -29,9 +29,9 @@ void GenerateScore::fileToScore(std::string mxmlFileOutput)
 
     auto audioReader = AudioReaderFactory::create(m_soundFileInput);
 
-    // TODO DoJoY get Plugin info from ?? Settings Class/File
-    RealTimeVampHost vampHost("cepstral-pitchtracker",
-                    "cepstral-pitchtracker", "notes", false,
+    // NOTE pyin doesn't work in realtime (uses getRemainingFeatures)
+    RealTimeVampHost vampHost("vamp-aubio",
+                    "aubionotes", "notes", false,
         *audioReader);
 
     vampHost.featuresAvailable = std::bind(&GenerateScore::collectFeatures, this, _1);;
