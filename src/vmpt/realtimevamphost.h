@@ -11,16 +11,13 @@
 
 #include <functional>
 
-#include <QString>
-
 #include "iaudioreader.h"
-#include "debughelper.h"
 
 using Vamp::Plugin;
 using Vamp::RealTime;
 
+using std::string;
 using namespace std::placeholders;
-
 typedef std::function<void(Plugin::FeatureList* features)> cbFeaturesAvailable;
 
 /**
@@ -33,8 +30,8 @@ class RealTimeVampHost
     // or property
     // TODO DoJoY useFrames default to false and a setter.
 public:
-    RealTimeVampHost(QString libraryName, QString pluginId,
-                     QString output, bool useFrames,
+    RealTimeVampHost(string libraryName, string pluginId,
+                     string output, bool useFrames,
                      IAudioReader& reader);
     virtual ~RealTimeVampHost();
 
@@ -50,13 +47,13 @@ public:
 protected:
     void initialisePlugin();
 
-    QString m_libraryName;
-    QString m_pluginId;
+    string m_libraryName;
+    string m_pluginId;
 
     float m_inputSampleRate;
     int m_channels;
 
-    QString m_output;
+    string m_output;
 
     bool m_useFrames;
 

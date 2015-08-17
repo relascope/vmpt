@@ -1,7 +1,7 @@
 #ifndef TRANSCRIBEHELPER_H
 #define TRANSCRIBEHELPER_H
 
-#include <QString>
+#include <string>
 
 class TranscribeHelper
 {
@@ -10,13 +10,13 @@ public:
 
     void setStandardPitch(float standardPitch) { m_standardPitch = standardPitch; }
 
-    QString getNoteFromFreq(float val);
+    std::string getNoteFromFreq(float val);
 
     int getOctaveFromFreq(float frequency);
 
 private:
-    QString getNoteName(int roundedLevel);
-    static qreal qLog2(qreal n);
+    std::string getNoteName(int roundedLevel);
+    static double log2(double n);
 
 private:
     float m_standardPitch = 440;

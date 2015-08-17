@@ -1,10 +1,6 @@
 #include "mxmlwriter.h"
 
-#include "debughelper.h"
-
 #include <fstream>
-
-#include <QDebug>
 
 #include <libmusicxml/elements.h>
 #include <libmusicxml/factory.h>
@@ -176,7 +172,7 @@ static Sxmlelement makeScore() {
 }
 
 
-MXMLWriter::MXMLWriter(QString fileName) :
+MXMLWriter::MXMLWriter(std::string fileName) :
     m_fileName(fileName)
 {
     m_xmlFile = TXMLFile::create();
@@ -193,7 +189,7 @@ MXMLWriter::MXMLWriter(QString fileName) :
 }
 
 
-void MXMLWriter::addNote(QString step, int octave, int duration)
+void MXMLWriter::addNote(std::string step, int octave, int duration)
 {
     // duration is 4 for quarter, 8 for half...
     // add measures to part...
@@ -219,7 +215,7 @@ void MXMLWriter::addNote(QString step, int octave, int duration)
 
 
 
-    pitch->push(newElement(k_step, step.toStdString()));
+    pitch->push(newElement(k_step, step));
     pitch->push(newElementI(k_octave, octave));
 
     noteElem->push(pitch);
@@ -250,7 +246,7 @@ void MXMLWriter::finish()
     m_xmlFile->set(score);
 
     std::ofstream outStream;
-    outStream.open(m_fileName.toStdString().c_str());
+    outStream.open(m_fileName.c_str());
 
     // TODO prints to stdout ("whitechars")...
     m_xmlFile->print(outStream);

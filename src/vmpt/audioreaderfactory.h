@@ -4,12 +4,10 @@
 
 #include <memory>
 
-#include <QString>
-
 #include "iaudioreader.h"
 
 class AudioReaderFactory {
 public:
-    static std::unique_ptr<IAudioReader> create(QString fromFile);
+    static std::unique_ptr<IAudioReader> create(std::string fromFile);
 };
 #endif // AUDIOREADERFACTORY_H

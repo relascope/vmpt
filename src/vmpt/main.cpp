@@ -1,7 +1,5 @@
 #include "generatescore.h"
 
-#include <QDebug>
-
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
@@ -60,8 +58,8 @@ int main(int argc, char *argv[])
         }
 
         if (vm.count("inputaudiofile") && vm.count("outputmusicxmlscorefile")) {
-            QString inputAudioFile = QString::fromStdString(vm["inputaudiofile"].as<string>());
-            QString outputMusicXMLScoreFile = QString::fromStdString(vm["outputmusicxmlscorefile"].as<string>());
+            string inputAudioFile = vm["inputaudiofile"].as<string>();
+            string outputMusicXMLScoreFile = vm["outputmusicxmlscorefile"].as<string>();
 
             GenerateScore().fromAudioFile(inputAudioFile).toMusicXML(outputMusicXMLScoreFile);
         } else {
@@ -73,28 +71,23 @@ int main(int argc, char *argv[])
     }
     catch (std::exception& ex)
     {
-        qDebug() << "catch std::exception&";
-        cout << ex.what() << endl;
-    }
-    catch (QString& ex)
-    {
-        qDebug() << "catch QString&";
-        cout << ex.toStdString() << endl;
+        std::cerr << "PeNny got stuck: ---catch std::exception&---" << std::endl;
+        std::cerr << ex.what() << endl;
     }
     catch (std::string& ex)
     {
-        qDebug() << "catch std::string&";
-        cout << ex << endl;
+        std::cerr << "PeNny got stuck: ---catch std::string&---" << std::endl;
+        std::cerr << ex << endl;
     }
     catch (const char *ex)
     {
-        qDebug() << "catch const char *";
-        cout << ex << endl;
+        std::cerr << "PeNny got stuck: ---catch const char *---" << std::endl;
+        std::cerr << ex << endl;
     }
     catch (...)
     {
-        qDebug() << "catch ...";
-        qFatal("A very bad error occured. please contact http://www.dojoy.at");
+        std::cerr << "PeNny got stuck: ---catch ... ---" << std::endl;
+        std::cerr << "A very bad error occured. please contact http://www.dojoy.at" << std::endl;
     }
 
     return 1;

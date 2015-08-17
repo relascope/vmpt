@@ -3,32 +3,32 @@
 
 #include <vamp-hostsdk/RealTime.h>
 #include <vamp-hostsdk/Plugin.h>
-
 #include "mxmlwriter.h"
 
 using Vamp::Plugin;
+using std::string;
 
 // TODO DoJoY Better description
 class GenerateScore
 {
 private:
     // TODO DoJoY will be refactored to better reading...
-    GenerateScore(QString soundFileInput);
+    GenerateScore(string soundFileInput);
 public:
     GenerateScore();
     virtual ~GenerateScore();
 
-    GenerateScore& fromAudioFile(QString soundFileInput);
+    GenerateScore& fromAudioFile(string soundFileInput);
 
-    void toMusicXML(QString mxmlFileOutput);
+    void toMusicXML(string mxmlFileOutput);
 
 private:
     void collectFeatures(Plugin::FeatureList *features);
     void writeNoteToScore(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
 
-    void fileToScore(QString mxmlFileOutput);
+    void fileToScore(string mxmlFileOutput);
 
-    void microphoneToScore(QString mxmlFileOutput);
+    void microphoneToScore(string mxmlFileOutput);
 
 private:
     typedef enum
@@ -38,7 +38,7 @@ private:
         MICROPHONE,
     } InputType;
 private:
-    QString m_soundFileInput;
+    string m_soundFileInput;
     MXMLWriter *m_outputxml;
 
     InputType m_inputType;

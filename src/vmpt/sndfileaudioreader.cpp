@@ -1,16 +1,17 @@
 #include "sndfileaudioreader.h"
 
-#include <QDebug>
+#include <iostream>
+#include <string.h>
 
-SndFileAudioReader::SndFileAudioReader(QString fileName)
-    : m_fileHandle(fileName.toStdString())
+SndFileAudioReader::SndFileAudioReader(std::string fileName)
+    : m_fileHandle(fileName)
 {
 }
 
 bool
-SndFileAudioReader::canReadFile(QString fileName)
+SndFileAudioReader::canReadFile(std::string fileName)
 {
-    SndfileHandle handle(fileName.toStdString());
+    SndfileHandle handle(fileName);
 
     if (handle.error())
     {
@@ -21,13 +22,13 @@ SndFileAudioReader::canReadFile(QString fileName)
 }
 
 std::unique_ptr<SndFileAudioReader>
-SndFileAudioReader::create(QString fileName)
+SndFileAudioReader::create(std::string fileName)
 {
     if (!canReadFile(fileName))
     {
-        QString msg("SndFileReader cannot read file: ");
+        std::string msg("SndFileReader cannot read file: ");
         msg += fileName;
-        qCritical() << msg;
+        std::cerr << msg;
         throw msg;
     }
 

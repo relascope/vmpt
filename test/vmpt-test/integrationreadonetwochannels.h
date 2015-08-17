@@ -8,22 +8,21 @@
 #include "testrunner.h"
 
 #include "generatescore.h"
-#include "debughelper.h"
-#include "helpers.h"
 
 #include "testhelper.h"
 
 using std::endl;
+using std::string;
 
 class IntegrationReadOneTwoChannels
     : public QObject
 {
     Q_OBJECT
 private slots:
-    void testOneTwoChannels()
+    void testReadFilesWithOneAndTwoChannelsAndCompareOutput()
     {
-        QString oneChannelFile = getOneChannelFileName();
-        QString twoChannelFile = getTwoChannelFileName();
+        string oneChannelFile = getOneChannelFileName();
+        string twoChannelFile = getTwoChannelFileName();
 
         QTemporaryFile twoChannelScore;
         QTemporaryFile oneChannelScore;
@@ -32,11 +31,8 @@ private slots:
         oneChannelScore.open();
         twoChannelScore.open();
 
-        qStdOut() << "read file with TWO channels and generating score... " << endl;
-        GenerateScore().fromAudioFile(twoChannelFile).toMusicXML(twoChannelScore.fileName());
-
-        qStdOut() << "read file with ONE channel and generating score... " << endl;
-        GenerateScore().fromAudioFile(oneChannelFile).toMusicXML(oneChannelScore.fileName());
+        GenerateScore().fromAudioFile(twoChannelFile).toMusicXML(twoChannelScore.fileName().toStdString());
+        GenerateScore().fromAudioFile(oneChannelFile).toMusicXML(oneChannelScore.fileName().toStdString());
 
         QVERIFY2(oneChannelScore.isOpen() && oneChannelScore.isReadable(), "File is not readable!");
         QVERIFY2(twoChannelScore.isOpen() && oneChannelScore.isReadable(), "File is not readable!");
@@ -44,7 +40,7 @@ private slots:
         QByteArray bytes1 = oneChannelScore.readAll();
         QByteArray bytes2 = twoChannelScore.readAll();
 
-        ASSERT(bytes1.size() == bytes2.size())
+        QVERIFY(bytes1.size() == bytes2.size());
 
         QVERIFY2(bytes1.size() > 0, "no bytes written for ONE channel Score");
         QVERIFY2(bytes2.size() > 0, "no bytes written for TWO channel Score");

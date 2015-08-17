@@ -6,23 +6,19 @@
 #include <libmusicxml/xml.h>
 #include <libmusicxml/xmlfile.h>
 
-
-#include <QString>
-
-
 using namespace MusicXML2;
 
 class MXMLWriter
 {
 public:
-    MXMLWriter(QString fileName);
+    MXMLWriter(std::string fileName);
     virtual ~MXMLWriter();
 
-    void addNote(QString step, int octave, int duration);
+    void addNote(std::string step, int octave, int duration);
     void finish();
 
 private:
-    QString m_fileName;
+    std::string m_fileName;
 
     Sxmlelement score;
     Sxmlelement part;
