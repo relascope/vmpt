@@ -222,7 +222,7 @@ void RealTimeVampHost::initialisePlugin()
         }
     }
 
-    std::cout << "Plugin " << m_pluginId << "loaded and initialised successfully... " << std::endl;
+    std::cout << "Plugin " << m_pluginId << " loaded and initialised successfully... " << std::endl;
 }
 
 RealTimeVampHost::~RealTimeVampHost()

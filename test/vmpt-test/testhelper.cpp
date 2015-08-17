@@ -13,13 +13,13 @@ QDir getAudioDir()
     return appDir;
 }
 
-QString getOneChannelFileName()
+string getOneChannelFileName()
 {
-    return getAudioDir().absoluteFilePath("fini1.wav");
+    return getAudioDir().absoluteFilePath("fini1.wav").toStdString();
 }
 
-QString getTwoChannelFileName()
+string getTwoChannelFileName()
 {
-    return getAudioDir().absoluteFilePath("fini2.wav");
+    return getAudioDir().absoluteFilePath("fini2.wav").toStdString();
 }
 

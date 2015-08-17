@@ -3,15 +3,16 @@
 
 #include <QDir>
 
+using std::string;
+
 /**
  * @brief getAudioDir returns the directory containing audio test data
  * @return
  */
 QDir getAudioDir();
 
-QString getOneChannelFileName();
-
-QString getTwoChannelFileName();
+string getOneChannelFileName();
+string getTwoChannelFileName();
 
 #endif // TESTHELPER_H
 

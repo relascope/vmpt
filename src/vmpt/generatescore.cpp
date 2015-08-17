@@ -39,6 +39,8 @@ void GenerateScore::fileToScore(std::string mxmlFileOutput)
 
     m_outputxml->finish();
 
+    std::cout << "Score file " << mxmlFileOutput << " written. Have fun!" << std::endl;
+
     delete m_outputxml;
     m_outputxml = 0;
 }
