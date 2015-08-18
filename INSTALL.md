@@ -46,14 +46,14 @@ make
 sudo make install
 cd ..
 cd ..
-echo getting/building cepstral-pitchtracker
+echo getting/building pYIN
 sudo apt-get --yes --force-yes install libboost-all-dev vamp-plugin-sdk mercurial
-mkdir cepstral-pitchtracker || true
-cd cepstral-pitchtracker
-hg clone https://code.soundsoftware.ac.uk/hg/cepstral-pitchtracker . || hg update
+mkdir pYIN || true
+cd pYIN
+hg clone https://code.soundsoftware.ac.uk/hg/pyin . || hg update
 make -f Makefile.linux64
 mkdir ~/vamp
-cp cepstral-pitchtracker.so ~/vamp/
+cp pyin.so ~/vamp/
 cd ..
 echo finnally installing vmpt
 sudo apt-get --yes --force-yes install libsndfile1-dev libvamp-hostsdk3 qtbase5-dev 
