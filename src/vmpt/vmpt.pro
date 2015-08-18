@@ -7,6 +7,9 @@
 QT  -= core
 QT  -= gui
 
+# needed, if QtCore is not used
+LIBS += -ldl
+
 TARGET = vmpt
 CONFIG   += console
 CONFIG   -= app_bundle

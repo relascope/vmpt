@@ -2,7 +2,6 @@ INCLUDEPATH  += $$PWD
 
 CONFIG += c++11
 
-LIBS += -ldl
 LIBS += -lvamp-hostsdk
 LIBS += -lmusicxml2
 LIBS += -lsndfile
