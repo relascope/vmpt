@@ -49,8 +49,8 @@ void GenerateScore::fileToScore(std::string mxmlFileOutput)
     auto audioReader = AudioReaderFactory::create(m_soundFileInput);
 
     // NOTE pyin doesn't work in realtime (uses getRemainingFeatures)
-    RealTimeVampHost vampHost("vamp-aubio",
-                    "aubionotes", "notes", false,
+    RealTimeVampHost vampHost("pyin",
+                    "pyin", "notes", false,
         *audioReader);
 
     vampHost.featuresAvailable = std::bind(&GenerateScore::collectFeatures, this, _1);;
