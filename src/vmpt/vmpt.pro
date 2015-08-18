@@ -8,6 +8,7 @@ QT  -= core
 QT  -= gui
 
 # needed, if QtCore is not used
+QMAKE_LFLAGS += -Wl,--no-as-needed
 LIBS += -ldl
 
 TARGET = vmpt
