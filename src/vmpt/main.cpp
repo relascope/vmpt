@@ -19,25 +19,28 @@
 
 #include "generatescore.h"
 
-#include <boost/program_options.hpp>
+#include <cstring>
 
-namespace po = boost::program_options;
 using std::cout;
 using std::endl;
 using std::string;
 
 void printVersion(const char *prog)
 {
-    cout << prog << "PeNny version 0.1" << endl;
-    cout << "(c) Günther Humer" << endl;
-    cout << "http://www.dojoy.at" << endl;
+    cout << endl << prog << " - virtual music power teacher/transcriber" << endl;
+    cout << "PeNny version 0.1 notates audio files to MusicXML" << endl;
+    cout << "Copyright (c) 2015 www.dojoy.at, Günther Humer" << endl << endl;
 }
 
-void printHelp(const char *prog, po::options_description desc)
-{
-    printVersion(prog);
-    cout << "Usage: " << prog << " InputAudioFile OutputMusicXmlScoreFile" << endl;
-    cout << desc << endl;
+void usage(const char *name) {
+    printVersion(name);
+    cout << endl << "Usage: " << endl << endl;
+    cout << name << " InputAudioFile OutputMusicXmlScoreFile" << endl;
+    cout << " InputAudioFile             audio input file" << endl;
+    cout << " OutputMusicXmlScoreFile    MusicXML score output file" << endl;
+    cout << " -h [--help]                This help" << endl;
+    cout << " -v [--version]             Version Information" << endl << endl;
+    exit(2);
 }
 
 int main(int argc, char *argv[])
@@ -45,44 +48,42 @@ int main(int argc, char *argv[])
     // TODO DoJoY bad style to catch them all here...
     try
     {
-        // TODO DoJoY QCommandlineParser could be used... our framework...
-        po::options_description desc("Allowed options");
 
-        desc.add_options()
-                ("inputaudiofile,i", po::value<string>(), "audio input file")
-                ("outputmusicxmlscorefile,o", po::value<string>(), "music xml score output file")
-                ("help,h", "produce help message")
-                ("version,v", "print version string")
-                ;
+        char *scooter = argv[0];
+        char *name = 0;
+        while (scooter && *scooter) {
+            if (*scooter == '/' || *scooter == '\\') name = ++scooter;
+            else ++scooter;
+        }
+        if (!name || !*name) name = argv[0];
 
-        po::positional_options_description posopt;
-        posopt.add("inputaudiofile", 1);
-        posopt.add("outputmusicxmlscorefile", 1);
+        if (argc < 2) usage(name);
 
-
-        po::variables_map vm;
-        po::store(po::command_line_parser(argc, argv).
-                  options(desc).positional(posopt).run(), vm);
-
-        po::notify(vm);
-
-        if (vm.count("help")) {
-            printHelp(argv[0], desc);
-            return 1;
+        if (argc == 2) {
+            if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) {
+                printVersion(name);
+                return 0;
+            } else if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
+                usage(name);
+                return 0;
+            } else {
+                usage(name);
+                return 0;
+            }
         }
 
-        if (vm.count("version")) {
-            printVersion(argv[0]);
-            return 1;
+        if (argc < 3) {
+            usage(name);
+            return 0;
         }
 
-        if (vm.count("inputaudiofile") && vm.count("outputmusicxmlscorefile")) {
-            string inputAudioFile = vm["inputaudiofile"].as<string>();
-            string outputMusicXMLScoreFile = vm["outputmusicxmlscorefile"].as<string>();
+        if (argc == 3) {
+            string inputAudioFile = argv[1];
+            string outputMusicXMLScoreFile = argv[2];
 
             GenerateScore().fromAudioFile(inputAudioFile).toMusicXML(outputMusicXMLScoreFile);
         } else {
-            printHelp(argv[0], desc);
+            usage(name);
             return 1;
         }
 

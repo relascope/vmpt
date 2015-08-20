@@ -17,8 +17,6 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -lboost_program_options
-
 #QMAKE_CXXFLAGS += -Werror
 QMAKE_CXXFLAGS += -pedantic
 QMAKE_CXXFLAGS += -Wall
