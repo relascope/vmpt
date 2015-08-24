@@ -33,26 +33,6 @@ using std::string;
 // TODO DoJoY DUPLICATE DEFINITION WITH FILETOSCORE
 #define DIVISION_PER_QUARTER	4
 
-//------------------------------------------------------------------------
-// a function that return random numbers in the given range
-//------------------------------------------------------------------------
-static int getrandom(int range) {
-#ifdef WIN32
-    float f = (float)rand() / RAND_MAX;
-#else
-    float f = (float)random() / RAND_MAX;
-#endif
-    return (int)(f * range);
-}
-
-static string randomNote() {
-    int n = getrandom(7);
-    string note;
-    note += (char('A' + n));
-    return note;
-}
-
-//------------------------------------------------------------------------
 static Sxmlattribute newAttribute(const string& name, const string& value)
 {
     Sxmlattribute attribute = xmlattribute::create();
@@ -61,7 +41,6 @@ static Sxmlattribute newAttribute(const string& name, const string& value)
     return attribute;
 }
 
-//------------------------------------------------------------------------
 static Sxmlattribute newAttributeI(const string& name, int value)
 {
     Sxmlattribute attribute = xmlattribute::create();
@@ -70,7 +49,6 @@ static Sxmlattribute newAttributeI(const string& name, int value)
     return attribute;
 }
 
-//------------------------------------------------------------------------
 static Sxmlelement newElement(int type, const string& value)
 {
     Sxmlelement elt = factory::instance().create(type);
@@ -78,7 +56,6 @@ static Sxmlelement newElement(int type, const string& value)
     return elt;
 }
 
-//------------------------------------------------------------------------
 static Sxmlelement newElementI(int type, int value)
 {
     Sxmlelement elt = factory::instance().create(type);
@@ -86,7 +63,6 @@ static Sxmlelement newElementI(int type, int value)
     return elt;
 }
 
-//------------------------------------------------------------------------
 static Sxmlelement makeMeasureAttributes() {
     Sxmlelement attributes = factory::instance().create(k_attributes);
     attributes->push (newElementI(k_divisions, DIVISION_PER_QUARTER));
@@ -104,47 +80,7 @@ static Sxmlelement makeMeasureAttributes() {
     return attributes;
 }
 
-//------------------------------------------------------------------------
-// creates a measure containing random notes
-// the function takes the measure number as an argument
-//------------------------------------------------------------------------
-static Sxmlelement makemeasure(unsigned long num) {
-    Sxmlelement measure = factory::instance().create(k_measure);
-    measure->add (newAttributeI("number", num));
-    if (num==1) {					//  creates specific elements of the first measure
-        measure->push(makeMeasureAttributes());		// division, time, clef...
-    }
-    for (int i = 0; i < 4; i++) {		// next adds 4 quarter notes
-        Sxmlelement note = factory::instance().create(k_note);		// creates the note
-        Sxmlelement pitch = factory::instance().create(k_pitch);	// creates a pitch
-
-
-
-        pitch->push (newElement(k_step, randomNote()));				// sets the pitch to a random value
-        pitch->push (newElementI(k_octave, 4 + getrandom(2)));		// sets the octave to a random value
-
-        note->push (pitch);											// adds the pitch to the note
-        note->push (newElementI(k_duration, DIVISION_PER_QUARTER));				// sets the note duration to a quarter note
-        // TODO DoJoY is this needed?
-//        note->push (newElement(k_type, "quarter"));					// creates the graphic elements of the note
-
-
-        measure->push (note);		// and finally adds the note to the measure
-    }
-    return measure;
-}
-
 #define kPartID	"P1"
-//------------------------------------------------------------------------
-// creates a part containing 'count' measures
-//------------------------------------------------------------------------
-Sxmlelement makePart(int count) {
-    Sxmlelement part = factory::instance().create(k_part);
-    part->add (newAttribute("id", kPartID));
-    for (int i=1; i<=count; i++)			// and 'count' times
-        part->push (makemeasure(i));			// adds a new measure to the part
-    return part;
-}
 
 //------------------------------------------------------------------------
 // creates the part list element
@@ -190,7 +126,6 @@ static Sxmlelement makeScore() {
     return score;
 }
 
-
 MXMLWriter::MXMLWriter(std::string fileName) :
     m_fileName(fileName)
 {
@@ -203,10 +138,7 @@ MXMLWriter::MXMLWriter(std::string fileName) :
 
     part = factory::instance().create(k_part);
     part->add(newAttribute("id", kPartID));
-
-
 }
-
 
 void MXMLWriter::addNote(std::string step, int octave, int duration)
 {
@@ -231,8 +163,6 @@ void MXMLWriter::addNote(std::string step, int octave, int duration)
 
     Sxmlelement noteElem = factory::instance().create(k_note);
     Sxmlelement pitch = factory::instance().create(k_pitch);
-
-
 
     pitch->push(newElement(k_step, step));
     pitch->push(newElementI(k_octave, octave));
