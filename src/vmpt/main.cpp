@@ -79,9 +79,10 @@ int main(int argc, char *argv[])
 
         if (argc == 3) {
             string inputAudioFile = argv[1];
-            string outputMusicXMLScoreFile = argv[2];
+            string outputMusicScoreFile = argv[2];
 
-            GenerateScore().fromAudioFile(inputAudioFile).toMusicXML(outputMusicXMLScoreFile);
+
+	    GenerateScore(outputMusicScoreFile).fromAudio(inputAudioFile);
         } else {
             usage(name);
             return 1;

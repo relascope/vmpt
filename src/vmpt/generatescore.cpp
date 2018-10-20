@@ -24,29 +24,23 @@
 #include "audioreaderfactory.h"
 
 GenerateScore::GenerateScore()
-  : m_inputType(UNDEFINED)
 {
 }
 
-GenerateScore::GenerateScore(string soundFileInput)
-  : m_soundFileInput(soundFileInput)
-  , m_inputType(LOCAL_FILE)
+GenerateScore::GenerateScore(string outputScore)
+  : m_outputScore(outputScore)
 {
 }
 
-GenerateScore& GenerateScore::fromAudioFile(std::string soundFileInput)
-{
-    m_inputType = LOCAL_FILE;
-    m_soundFileInput = soundFileInput;
+void GenerateScore::fromAudio(std::string inputAudio) {
 
-    return *this;
-}
+    m_writer = new MusicWriter();
+    m_writer->setFile(this->m_outputScore);
+    
+    m_writer->start();
+    
 
-void GenerateScore::fileToScore(std::string mxmlFileOutput)
-{
-    m_outputxml = new MXMLWriter(mxmlFileOutput.c_str());
-
-    auto audioReader = AudioReaderFactory::create(m_soundFileInput);
+    auto audioReader = AudioReaderFactory::create(inputAudio);
 
     // NOTE pyin doesn't work in realtime (uses getRemainingFeatures)
     RealTimeVampHost vampHost("pyin",
@@ -56,29 +50,14 @@ void GenerateScore::fileToScore(std::string mxmlFileOutput)
     vampHost.featuresAvailable = std::bind(&GenerateScore::collectFeatures, this, _1);;
     vampHost.process();
 
-    m_outputxml->finish();
+    m_writer->finish();
 
-    std::cout << "Score file " << mxmlFileOutput << " written. Have fun!" << std::endl;
-
-    delete m_outputxml;
-    m_outputxml = 0;
-}
-
-void GenerateScore::toMusicXML(std::string mxmlFileOutput)
-{
-    switch(m_inputType)
-    {
-    case LOCAL_FILE:
-        fileToScore(mxmlFileOutput);
-        break;
-    default:
-        throw "Input type not implemented ";
-    }
+    std::cout << "Score file " << m_outputScore << " written. Have fun!" << std::endl;
 }
 
 void GenerateScore::collectFeatures(Plugin::FeatureList *features)
 {
-    for (Plugin::Feature feature : *features)
+   for (Plugin::Feature feature : *features)
     {
         std::cout << std::endl;
         for (float val : feature.values)
@@ -94,8 +73,8 @@ void GenerateScore::collectFeatures(Plugin::FeatureList *features)
 
 GenerateScore::~GenerateScore()
 {
-    if (m_outputxml)
-        delete m_outputxml;
+    if (m_writer)
+        delete m_writer;
 }
 
 // TODO DoJoY DUPLICATE DEFINITION WITH MXMLWRITER
@@ -160,8 +139,15 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
     string note = TranscribeHelper().getNoteFromFreq(val);
 
     int octave = TranscribeHelper().getOctaveFromFreq(val);
+    
+    std::cout << "note" << note << std::endl;
+    std::cout << "octave" << octave << std::endl;
+    std::cout << "duration" << mxmlDuration << std::endl;
+    
+    
+    //m_writer.write(note+octave+mxmlDuration+ " ");
 
-    m_outputxml->addNote(note, octave, mxmlDuration);
+    /////////m_outputxml->addNote(note, octave, mxmlDuration);
 }
 
 

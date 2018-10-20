@@ -22,45 +22,76 @@
 
 #include <vamp-hostsdk/RealTime.h>
 #include <vamp-hostsdk/Plugin.h>
-#include "mxmlwriter.h"
 
 using Vamp::Plugin;
 using std::string;
 
+#include <fstream>
+#include <string>
+#include <iostream>
+
+//TODO
+using namespace std;
+
+class MusicWriter;
+
+class MusicWriter {
+public:
+	void start() {
+		if (!os.is_open()) {
+			os.open(m_outputFile);
+		}
+		
+		os << "";
+		
+	}	
+	void finish(){
+		if (!os.is_open()) {
+			os.open(m_outputFile);
+		}
+		
+		os << "";
+		
+		os.close();
+		};
+	void write(string str) {
+		if (!os.is_open()) {
+			os.open(m_outputFile);
+		}
+		os << str;
+	}
+	
+	void setFile(string outputFile) {this->m_outputFile = outputFile;}
+	~MusicWriter() {
+		if (os.is_open()) {
+			os.close();
+		}
+	}
+protected:
+	ofstream os;
+	string m_outputFile;
+};
+
+
+
+
 // TODO DoJoY Better description
 class GenerateScore
 {
-private:
-    // TODO DoJoY will be refactored to better reading...
-    GenerateScore(string soundFileInput);
 public:
+    GenerateScore(string outputScore);
+    void fromAudio(string inputAudio);
     GenerateScore();
     virtual ~GenerateScore();
 
-    GenerateScore& fromAudioFile(string soundFileInput);
-
-    void toMusicXML(string mxmlFileOutput);
 
 private:
     void collectFeatures(Plugin::FeatureList *features);
     void writeNoteToScore(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
 
-    void fileToScore(string mxmlFileOutput);
 
-    void microphoneToScore(string mxmlFileOutput);
-
-private:
-    typedef enum
-    {
-        UNDEFINED = -1,
-        LOCAL_FILE,
-        MICROPHONE,
-    } InputType;
-private:
-    string m_soundFileInput;
-    MXMLWriter *m_outputxml;
-
-    InputType m_inputType;
+    string m_outputScore;
+    MusicWriter *m_writer;    
 };
 
 #endif // FILETOSCORE_H
