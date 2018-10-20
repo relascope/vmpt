@@ -139,13 +139,23 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
     string note = TranscribeHelper().getNoteFromFreq(val);
 
     int octave = TranscribeHelper().getOctaveFromFreq(val);
-    
+   
+	string oct = "";
+
+    if (octave > 1) 
+	    while (octave-- > 0) oct+="'";
+
+    if (octave < 1) 
+	    while (octave++ < 0) oct+=".";
+
+
+
     std::cout << "note" << note << std::endl;
     std::cout << "octave" << octave << std::endl;
     std::cout << "duration" << mxmlDuration << std::endl;
     
     
-    //m_writer.write(note+octave+mxmlDuration+ " ");
+	m_writer->write(note+oct+to_string(mxmlDuration)+ " ");
 
     /////////m_outputxml->addNote(note, octave, mxmlDuration);
 }

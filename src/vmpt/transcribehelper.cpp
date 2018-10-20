@@ -41,18 +41,18 @@ std::string TranscribeHelper::getNoteName(int roundedLevel)
     // TODO Alterations: generate both in one function/class, where the key is stored
 
     vector<string> listNotes;
-    listNotes.push_back("A");
-    listNotes.push_back("A");
-    listNotes.push_back("B");
-    listNotes.push_back("C");
-    listNotes.push_back("C");
-    listNotes.push_back("D");
-    listNotes.push_back("D");
-    listNotes.push_back("E");
-    listNotes.push_back("F");
-    listNotes.push_back("F");
-    listNotes.push_back("G");
-    listNotes.push_back("G");
+    listNotes.push_back("a");
+    listNotes.push_back("a");
+    listNotes.push_back("b");
+    listNotes.push_back("c");
+    listNotes.push_back("c");
+    listNotes.push_back("d");
+    listNotes.push_back("d");
+    listNotes.push_back("e");
+    listNotes.push_back("f");
+    listNotes.push_back("f");
+    listNotes.push_back("g");
+    listNotes.push_back("g");
 
     int realLevel = roundedLevel % 12;
 
