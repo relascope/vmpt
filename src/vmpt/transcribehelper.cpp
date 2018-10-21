@@ -42,17 +42,17 @@ std::string TranscribeHelper::getNoteName(int roundedLevel)
 
     vector<string> listNotes;
     listNotes.push_back("a");
-    listNotes.push_back("a");
+    listNotes.push_back("ais");
     listNotes.push_back("b");
     listNotes.push_back("c");
-    listNotes.push_back("c");
+    listNotes.push_back("cis");
     listNotes.push_back("d");
-    listNotes.push_back("d");
+    listNotes.push_back("dis");
     listNotes.push_back("e");
     listNotes.push_back("f");
-    listNotes.push_back("f");
+    listNotes.push_back("fis");
     listNotes.push_back("g");
-    listNotes.push_back("g");
+    listNotes.push_back("gis");
 
     int realLevel = roundedLevel % 12;
 

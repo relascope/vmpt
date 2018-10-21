@@ -144,12 +144,8 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
 
 	if (octave >= 4)
 		while ((octave--) >= 4) oct+="'";
-
 	else if (octave < 4)
 		while ((octave++) < 4) oct+=",";
-
-
-
 
     std::cout << "note" << note << std::endl;
     std::cout << "octave" << octave << std::endl;
