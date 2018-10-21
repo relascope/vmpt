@@ -42,7 +42,7 @@ public:
 			os.open(m_outputFile);
 		}
 		
-		os << "";
+		os << "{";
 		
 	}	
 	void finish(){
@@ -50,7 +50,7 @@ public:
 			os.open(m_outputFile);
 		}
 		
-		os << "";
+		os << "}";
 		
 		os.close();
 		};

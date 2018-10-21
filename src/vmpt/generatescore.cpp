@@ -102,8 +102,8 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
     float durationInBeats = 4/ duration.nsec / (1000.f*1000.f*1000.f) * bpm / 60.f;
     
     string lyDuration = "";
-    if (durationInBeats > 16) lyDuration = "\longa";
-    if (durationInBeats > 8) lyDuration = "\breve";
+    if (durationInBeats > 16) lyDuration = "\\longa";
+    if (durationInBeats > 8) lyDuration = "\\breve";
     if (durationInBeats > 4) lyDuration = "1";
     if (durationInBeats > 2) lyDuration = "2";
     if (durationInBeats > 1) lyDuration = "4";
