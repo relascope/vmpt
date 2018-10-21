@@ -37,22 +37,50 @@ void GenerateScore::fromAudio(std::string inputAudio) {
     m_writer = new MusicWriter();
     m_writer->setFile(this->m_outputScore);
     
-    m_writer->start();
     
-
     auto audioReader = AudioReaderFactory::create(inputAudio);
+    
+    
+    m_writer->start();
+      
 
     // NOTE pyin doesn't work in realtime (uses getRemainingFeatures)
     RealTimeVampHost vampHost("pyin",
                     "pyin", "notes", false,
         *audioReader);
 
+
     vampHost.featuresAvailable = std::bind(&GenerateScore::collectFeatures, this, _1);;
     vampHost.process();
 
     m_writer->finish();
+    
+    
+    
+    m_writer->startChord();
+    auto audioReaderChord = AudioReaderFactory::create(inputAudio);
+    RealTimeVampHost vampChordHost("nnls-chroma", "chordino", "simplechord", false, *audioReaderChord);
+    vampChordHost.featuresAvailable = std::bind(&GenerateScore::collectChords, this, _1);
+    vampChordHost.process();
+
+	m_writer->finishChord();
 
     std::cout << "Score file " << m_outputScore << " written. Have fun!" << std::endl;
+}
+
+void GenerateScore::collectChords(Plugin::FeatureList * features) {
+   for (Plugin::Feature feature : *features)
+    {
+		writeChordToScore(feature.label, feature.timestamp);
+
+        std::cout << std::endl;
+        for (float val : feature.values)
+        {
+            writeChordToScore(feature.label, feature.timestamp);
+        }
+        if (feature.values.size() > 0)
+            std::cout << std::endl;
+    }
 }
 
 void GenerateScore::collectFeatures(Plugin::FeatureList *features)
@@ -82,6 +110,13 @@ GenerateScore::~GenerateScore()
 
 #include  <math.h>
 
+void GenerateScore::writeChordToScore(string label, RealTime timestamp) {
+	
+	
+	m_writer->writeChord(label + "4");
+	
+	
+}
 
 
 void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime timestamp)

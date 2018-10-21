@@ -42,7 +42,7 @@ public:
 			os.open(m_outputFile);
 		}
 		
-		os << "{";
+		os << "{ ";
 		
 	}	
 	void finish(){
@@ -50,9 +50,7 @@ public:
 			os.open(m_outputFile);
 		}
 		
-		os << "}";
-		
-		os.close();
+		os << " }";		
 		};
 	void write(string str) {
 		if (!os.is_open()) {
@@ -61,8 +59,33 @@ public:
 		os << str;
 	}
 	
+	void startChord() {
+		if (!os.is_open()) {
+			os.open(m_outputFile);
+		}
+		
+		os << "\chordmode { ";
+		
+	}	
+	void finishChord(){
+		if (!os.is_open()) {
+			os.open(m_outputFile);
+		}
+		
+		os << " }";
+		
+		};
+	void writeChord(string str) {
+		if (!os.is_open()) {
+			os.open(m_outputFile);
+		}
+		os << " " << str << " ";
+	 }
+		
+	
+	
 	void setFile(string outputFile) {this->m_outputFile = outputFile;}
-	~MusicWriter() {
+	virtual ~MusicWriter() {
 		if (os.is_open()) {
 			os.close();
 		}
@@ -86,8 +109,10 @@ public:
 
 
 private:
+	void collectChords(Plugin::FeatureList * features);
     void collectFeatures(Plugin::FeatureList *features);
     void writeNoteToScore(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
+    void writeChordToScore(string label, Vamp::RealTime timestamp);
 
 
     string m_outputScore;
