@@ -80,64 +80,13 @@ GenerateScore::~GenerateScore()
 // TODO DoJoY DUPLICATE DEFINITION WITH MXMLWRITER
 #define DIVISION_PER_QUARTER 4
 
+#include  <math.h>
+
+
+
 void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime timestamp)
 {
-    float bpm = 130;
-
-    /**
-     * calc...
-     * beats per minute given
-     * duration in seconds given
-     *
-     * Which note?
-     *
-     * BPM = 60
-     * duration = 1 sec
-     * ==> quarter
-     *
-     * duration needed?
-     * 4 is quarter
-     * 2 is eigth
-     *
-     * BPM = 60
-     * duration = 1 sec
-     * ==> 4 (quarter)
-     *
-     * duration = 2 sec
-     * ==> 8 (half)
-     *
-     * duration = 0.5 sec
-     * ==> 2 (eigth)
-     *
-     *
-     * BPM = 120
-     * duration = 1 sec
-     * ==> 8 (half)
-     *
-     * duration = 2 sec
-     * ==> 16 (full)
-     *
-     * duration = 0.5 sec
-     * ==> 4 (quarter)
-     */
-
-    // milli/micro/nano
-    float fmxmlDuration = duration.nsec / (1000.f*1000.f*1000.f)  * DIVISION_PER_QUARTER * bpm / 60.f;
-
-    int mxmlDuration = fmxmlDuration;
-
-    fmxmlDuration += timestamp.sec;//get rid of warning...
-    // TODO DoJoY CHECK why?
-//    if (mxmlDuration == 0)
-//        return;
-
-    // TODO DoJoY timestamp should be used to generate pause.... => last timestamp+duration needed...
-
-    // TODO DoJoY HACK if calculation breaks, you can go back to using quarters only.
-    mxmlDuration = DIVISION_PER_QUARTER;
-
     string note = TranscribeHelper().getNoteFromFreq(val);
-
     int octave = TranscribeHelper().getOctaveFromFreq(val);
    
 	string oct = "";
@@ -147,14 +96,21 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
 	else if (octave < 4)
 		while ((octave++) < 4) oct+=",";
 
-    std::cout << "note" << note << std::endl;
-    std::cout << "octave" << octave << std::endl;
-    std::cout << "duration" << mxmlDuration << std::endl;
-    
-    
-	m_writer->write(note+oct+to_string(mxmlDuration)+ " ");
 
-    /////////m_outputxml->addNote(note, octave, mxmlDuration);
+	// TODO get from vamp?
+    float bpm = 130;
+    float durationInBeats = 4/ duration.nsec / (1000.f*1000.f*1000.f) * bpm / 60.f;
+    
+    string lyDuration = "";
+    if (durationInBeats > 16) lyDuration = "\longa";
+    if (durationInBeats > 8) lyDuration = "\breve";
+    if (durationInBeats > 4) lyDuration = "1";
+    if (durationInBeats > 2) lyDuration = "2";
+    if (durationInBeats > 1) lyDuration = "4";
+    if (durationInBeats > 0.5) lyDuration = "8";
+    if (durationInBeats > 0.25) lyDuration = "16";
+    
+	m_writer->write(note+oct+lyDuration+ " ");
 }
 
 
