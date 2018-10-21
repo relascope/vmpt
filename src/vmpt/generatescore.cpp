@@ -142,11 +142,12 @@ void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime time
    
 	string oct = "";
 
-    if (octave > 1) 
-	    while (octave-- > 0) oct+="'";
+	if (octave >= 4)
+		while ((octave--) >= 4) oct+="'";
 
-    if (octave < 1) 
-	    while (octave++ < 0) oct+=".";
+	else if (octave < 4)
+		while ((octave++) < 4) oct+=",";
+
 
 
 
