@@ -44,9 +44,10 @@ void GenerateScore::fromAudio(std::string inputAudio) {
     m_writer->start();
       
 
+	std::map<string,float> emptyParams; 
     // NOTE pyin doesn't work in realtime (uses getRemainingFeatures)
     RealTimeVampHost vampHost("pyin",
-                    "pyin", "notes", false,
+                    "pyin", "notes", false, emptyParams, 
         *audioReader);
 
 
@@ -59,7 +60,7 @@ void GenerateScore::fromAudio(std::string inputAudio) {
     
     m_writer->startChord();
     auto audioReaderChord = AudioReaderFactory::create(inputAudio);
-    RealTimeVampHost vampChordHost("nnls-chroma", "chordino", "simplechord", false, *audioReaderChord);
+    RealTimeVampHost vampChordHost("nnls-chroma", "chordino", "simplechord", false, std::map<string,float>{{"usehartesyntax", 1.0}}, *audioReaderChord);
     vampChordHost.featuresAvailable = std::bind(&GenerateScore::collectChords, this, _1);
     vampChordHost.process();
 

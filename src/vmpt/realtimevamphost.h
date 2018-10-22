@@ -45,7 +45,7 @@ class RealTimeVampHost
 public:
     RealTimeVampHost(string libraryName, string pluginId,
                      string output, bool useFrames,
-                     IAudioReader& reader);
+                     std::map<string, float> pluginParameters, IAudioReader& reader);
     virtual ~RealTimeVampHost();
 
     /**
@@ -69,6 +69,8 @@ protected:
     string m_output;
 
     bool m_useFrames;
+
+	std::map<string, float> m_pluginParameters;
 
     IAudioReader& m_reader;
 private:

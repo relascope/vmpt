@@ -32,7 +32,7 @@ using Vamp::HostExt::PluginInputDomainAdapter;
 
 using namespace std;
 
-RealTimeVampHost::RealTimeVampHost(string libraryName, string pluginId, string output, bool useFrames,
+RealTimeVampHost::RealTimeVampHost(string libraryName, string pluginId, string output, bool useFrames, std::map<string, float> pluginParameters,
                     IAudioReader &reader) :
     m_libraryName(libraryName),
     m_pluginId(pluginId),
@@ -41,6 +41,7 @@ RealTimeVampHost::RealTimeVampHost(string libraryName, string pluginId, string o
     m_output(output),
     m_useFrames(useFrames),
     m_reader(reader),
+    m_pluginParameters(pluginParameters),
     m_outputNo(-1)
 {
     // TODO DoJoY Argument Checking and Error handling...
@@ -223,6 +224,10 @@ void RealTimeVampHost::initialisePlugin()
     if (m_outputNo == -1)
     {
         throw "Plugin Outputdescriptor not found. ";
+    }
+    
+    for (auto& param : m_pluginParameters) {
+		m_plugin->setParameter(param.first, param.second);
     }
 
     if (!m_plugin->initialise(m_channels, m_stepSize, m_blockSize))
