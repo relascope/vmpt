@@ -14,6 +14,7 @@ SOURCES += \
     $$PWD/generatescore.cpp
 
 HEADERS += \
+	$$PWD/musicwriter.h \
     $$PWD/realtimevamphost.h \
     $$PWD/transcribehelper.h \
     $$PWD/iaudioreader.h \
