@@ -42,7 +42,8 @@ private:
 	void collectChords(Plugin::FeatureList * features);
     void collectFeatures(Plugin::FeatureList *features);
     void writeNoteToScore(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
-    void writeChordToScore(string label, Vamp::RealTime timestamp);
+    void writeChordToScore(string chord, Vamp::RealTime timestamp);
+    string getLyChordFromHarte(string chord, Vamp::RealTime timestamp);
 
 
     string m_outputScore;

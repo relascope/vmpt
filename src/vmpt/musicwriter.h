@@ -23,12 +23,12 @@ public:
 		}
 		
 		os << " }";		
-		};
+        }
 	void write(string str) {
 		if (!os.is_open()) {
 			os.open(m_outputFile);
 		}
-		os << str;
+        os << str << " ";
 	}
 	
 	void startChord() {
@@ -51,7 +51,7 @@ public:
 		if (!os.is_open()) {
 			os.open(m_outputFile);
 		}
-		os << " " << str << " ";
+        os << str << " ";
 	 }
 		
 	

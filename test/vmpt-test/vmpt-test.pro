@@ -6,7 +6,7 @@
 
 QT  += core
 QT  -= gui
-QT  += multimedia
+#QT  += multimedia
 QT  +=  testlib
 
 CONFIG += c++11

@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <list>
 #include <iostream>
+#include <vector>
 
 //////////////////////////////////////////////////////////////////////////
 // Test Runner allows automatic execution of tests

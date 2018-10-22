@@ -31,8 +31,8 @@ private slots:
         oneChannelScore.open();
         twoChannelScore.open();
 
-        GenerateScore().fromAudioFile(twoChannelFile).toMusicXML(twoChannelScore.fileName().toStdString());
-        GenerateScore().fromAudioFile(oneChannelFile).toMusicXML(oneChannelScore.fileName().toStdString());
+        GenerateScore(twoChannelScore.fileName().toStdString()).fromAudio(twoChannelFile);
+        GenerateScore(oneChannelScore.fileName().toStdString()).fromAudio(oneChannelFile);
 
         QVERIFY2(oneChannelScore.isOpen() && oneChannelScore.isReadable(), "File is not readable!");
         QVERIFY2(twoChannelScore.isOpen() && oneChannelScore.isReadable(), "File is not readable!");

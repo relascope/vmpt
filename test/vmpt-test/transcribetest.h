@@ -3,7 +3,7 @@
 
 #include <QtTest/QtTest>
 
-#include <QtMath>
+//#include <QtMath>
 
 #include "testrunner.h"
 
