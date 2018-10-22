@@ -1,4 +1,5 @@
 INCLUDEPATH  += $$PWD
+INCLUDEPATH  += $$PWD/../vendor
 
 CONFIG += c++11
 

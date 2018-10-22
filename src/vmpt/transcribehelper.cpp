@@ -106,3 +106,165 @@ int TranscribeHelper::getOctaveFromFreq(float frequency)
 
     return octaveOfStandardPitch;
 }
+
+#include  <math.h>
+#include <string.h>
+
+vector<string> getScale(string strTonic, bool isMinor=false) {
+    char notes[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+    int notesDistance[] = {2,1,2,2,1,2,2};
+
+    int notesDistanceMajor[] = {2,2,1,2,2,2,1};
+    int *notesDistanceMinor = notesDistance;
+
+    int accModifier = 0;
+    if (strTonic.length() != 1)
+        if (strTonic.substr(1, strTonic.length()-1) == "is")
+            accModifier = -1;
+        else if (strTonic.substr(1, strTonic.length()-1) == "es")
+            accModifier = +1;
+
+    int tonicIndex=0;
+    for (int i = 0; i < 8; ++i) {
+        if (notes[i] == strTonic[0]) {
+            tonicIndex = i;
+            break;
+        }
+
+    }
+
+    vector<string> res;
+
+    for (int i = 0; i < 8; ++i) {
+        int noteIndex = (i+tonicIndex)%7;
+        string note = "" + notes[noteIndex];
+
+        int dist = accModifier;
+        int correctDistance = 0;
+        for (size_t d = 0; d <= i; ++d) {
+            dist += notesDistance[(tonicIndex + d)%7];
+            if (isMinor)
+                correctDistance += notesDistanceMinor[d];
+            else
+                correctDistance += notesDistanceMajor[d];
+
+        }
+        if (correctDistance - dist == 1)
+            note += "is";
+        else if  (correctDistance - dist == -1)
+            note += "es";
+
+        res.push_back(note);
+    }
+
+    return res;
+
+}
+string calcBass(string strBass, string strTonic, bool isMinor=false) {
+    string bassModifier = "";
+    int bassIndex = 0;
+
+
+    if (strBass.length() == 2) {
+        int bassIndex = int(strBass[1]) - 1;
+
+        if (strBass[0] == 'b')
+            bassModifier = "es";
+        else if (strBass[0] == '#')
+            bassModifier = "is";
+    }else
+        bassIndex = int(strBass[0]) - 1;
+
+
+    string bass = getScale(strTonic, isMinor) [bassIndex];
+
+    if (bass.length() > 1 && bassModifier != "")
+        if (bass.substr(1, bass.length() -1) == "is" && bassModifier == "es" or bass.substr(1, bass.length() -1) == "es" and bassModifier == "is")
+            bass = bass[0];
+        else
+            bass += bassModifier;
+
+    return bass;
+}
+
+#include <string>
+#include <locale>
+#include <iostream>       // std::cout
+#include <string>         // std::string
+#include <locale>
+#include <algorithm>
+
+#include <iostream>
+#include <string>
+
+using std::to_string;
+
+string TranscribeHelper::getLyChordFromHarte(string chord, Vamp::RealTime timestamp) {
+
+    string result = "";
+    // HACK TODO
+//    int duration = getDurationFromTimestamp();
+    int duration = 4;
+
+    if (chord == "N") {
+        result = "r" + to_string(duration);
+        return result;
+    }
+
+    std::transform(chord.begin(), chord.end(), chord.begin(), ::tolower);
+
+    if (chord.length() < 2)
+        return chord + to_string(duration);
+
+    //BASE + DURATION + ifmodifier : modifier + ifbass /bass
+
+
+    //// BASE
+
+    string base = chord.substr(0, 1);
+
+    int position = 1;
+
+    if (chord[1] == 'b') {
+        base += "es";
+        position++;
+    }else if (chord[1] == '#') {
+        base += "is";
+        position++;
+    }
+
+    //// BASE
+
+    int basspos = chord.find('/');
+
+    size_t posendmod;
+
+    if (basspos !=-1) posendmod = basspos ;
+    else posendmod = chord.length();
+
+
+
+    string modifier = chord.substr(position, posendmod);
+
+    if (modifier != "" && modifier[0] != ':') {
+        modifier = ':' + modifier;
+
+        modifier = modifier.replace(modifier.begin(), modifier.end(), 'hdim7', '7.5-');
+    }
+
+
+
+        string bass = "";
+
+        if (basspos != -1) {
+            bass = chord.substr(basspos + 1,chord.length());
+            bass = calcBass(bass, base, chord[1] == 'm');
+        }
+        if (bass != "")
+            bass = '/' + bass;
+
+        result =  base+to_string(duration) + modifier + bass;
+
+        return result;
+}
+

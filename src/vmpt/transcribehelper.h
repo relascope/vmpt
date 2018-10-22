@@ -22,6 +22,12 @@
 
 #include <string>
 
+
+#include <vamp-hostsdk/RealTime.h>
+
+using std::string;
+#include <vamp-hostsdk/RealTime.h>
+
 class TranscribeHelper
 {
 public:
@@ -32,6 +38,8 @@ public:
     std::string getNoteFromFreq(float val);
 
     int getOctaveFromFreq(float frequency);
+
+    string getLyChordFromHarte(string chord, Vamp::RealTime timestamp);
 
 private:
     std::string getNoteName(int roundedLevel);
