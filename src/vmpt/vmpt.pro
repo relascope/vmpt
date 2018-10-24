@@ -3,7 +3,7 @@
 # Project created by QtCreator 2015-05-22T15:00:01
 #
 #-------------------------------------------------
-
+CONFIG += c++11
 QT  -= core
 QT  -= gui
 

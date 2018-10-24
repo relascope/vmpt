@@ -27,8 +27,9 @@ using std::string;
 
 void printVersion(const char *prog)
 {
-    cout << endl << prog << " - virtual music power teacher/transcriber" << endl;
-    cout << "PeNny version 0.1 notates audio files to MusicXML" << endl;
+    cout << endl << prog << " - virtual music power transcriber" << endl;
+    cout << "PeNny version 2.0 notates audio files to leadsheats" << endl;
+    cout << "including melody and chords. " << endl << endl;
     cout << "Copyright (c) 2015 www.dojoy.at, Günther Humer" << endl << endl;
 }
 
