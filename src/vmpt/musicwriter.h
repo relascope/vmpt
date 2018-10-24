@@ -36,7 +36,7 @@ public:
 			os.open(m_outputFile);
 		}
 		
-		os << "\\chordmode { ";
+        os << "\\chordmode { ";
 		
 	}	
 	void finishChord(){
@@ -46,7 +46,7 @@ public:
 		
 		os << " }";
 		
-		};
+        }
 	void writeChord(string str) {
 		if (!os.is_open()) {
 			os.open(m_outputFile);

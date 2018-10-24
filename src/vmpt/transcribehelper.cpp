@@ -274,15 +274,13 @@ string TranscribeHelper::getLyChordFromHarte(string chord, Vamp::RealTime timest
 
 std::vector<std::string> TranscribeHelper::getLyDurationFromRealtime(Vamp::RealTime rtDuration) {
     std::vector<std::string> result;
-    int bpm = 130;
-
-    float quarterInSeconds = 60./bpm;
+    float quarterInSeconds = 60.f/this->m_bpm;
 
     // smallest note 128th
     int x = 128;
-    float xInSeconds = quarterInSeconds / 5.;
+    float xInSeconds = 4.f * quarterInSeconds / 128.;
     while(x >=1) {
-        if (rtDuration.msec()/1000. <= xInSeconds)
+        if (rtDuration.nsec <= xInSeconds * (1000.f * 1000.f * 1000.f))
             result.push_back(to_string(x));
 
         x = x / 2;

@@ -42,6 +42,10 @@ public:
     virtual ~GenerateScore();
 
 
+    void writeMelody(std::string inputAudio);
+
+    void writeChords(std::string inputAudio);
+
 private:
 	void collectChords(Plugin::FeatureList * features);
     void collectFeatures(Plugin::FeatureList *features);

@@ -59,7 +59,7 @@ private:
 
 private:
     float m_standardPitch = 440.;
-    int m_bpm;
+    float m_bpm = 130.;
 };
 
 #endif // TRANSCRIBEHELPER_H

@@ -32,20 +32,15 @@ GenerateScore::GenerateScore(string outputScore)
 {
 }
 
-void GenerateScore::fromAudio(std::string inputAudio) {
-
-    m_writer = new MusicWriter();
-    m_writer->setFile(this->m_outputScore);
-    
-
-
+void GenerateScore::writeMelody(std::string inputAudio)
+{
     auto audioReader = AudioReaderFactory::create(inputAudio);
-    m_writer->start();      
+    m_writer->start();
 
-	std::map<string,float> emptyParams; 
+    std::map<string,float> emptyParams;
     // NOTE pyin doesn't work in realtime (uses getRemainingFeatures)
     RealTimeVampHost vampHost("pyin",
-                    "pyin", "notes", false, emptyParams, 
+                    "pyin", "notes", false, emptyParams,
         *audioReader);
 
 
@@ -53,9 +48,10 @@ void GenerateScore::fromAudio(std::string inputAudio) {
     vampHost.process();
 
     m_writer->finish();
+}
 
-    
-    
+void GenerateScore::writeChords(std::string inputAudio)
+{
     m_writer->startChord();
 
     auto audioReaderChord = AudioReaderFactory::create(inputAudio);
@@ -65,7 +61,15 @@ void GenerateScore::fromAudio(std::string inputAudio) {
 
     writeChords();
 
-	m_writer->finishChord();
+    m_writer->finishChord();
+}
+
+void GenerateScore::fromAudio(std::string inputAudio) {
+    m_writer = new MusicWriter();
+    m_writer->setFile(this->m_outputScore);
+
+//    writeMelody(inputAudio);
+    writeChords(inputAudio);
 
     std::cout << "Score file " << m_outputScore << " written. Have fun!" << std::endl;
 }
