@@ -29,10 +29,16 @@ using std::vector;
 
 class TranscribeHelper
 {
-public:
+protected:
     TranscribeHelper();
+public:
+    static TranscribeHelper& Instance() {
+        static TranscribeHelper m_instance;
+        return m_instance;
+    }
 
     void setStandardPitch(float standardPitch) { m_standardPitch = standardPitch; }
+    void setBPM(int bpm) { m_bpm = bpm; }
 
     std::string getNoteFromFreq(float val);
 
@@ -45,14 +51,15 @@ public:
      * @param rtDuration
      * @return vector can contain multiple times to be used as slurs
      */
-    vector<string> getLyDurationFromRealtime(Vamp::RealTime rtDuration);
+    std::vector<std::string> getLyDurationFromRealtime(Vamp::RealTime rtDuration);
 
 private:
     std::string getNoteName(int roundedLevel);
     static double log2(double n);
 
 private:
-    float m_standardPitch = 440;
+    float m_standardPitch = 440.;
+    int m_bpm;
 };
 
 #endif // TRANSCRIBEHELPER_H

@@ -19,6 +19,7 @@
 
 #include "transcribehelper.h"
 
+#include <cassert>
 #include <math.h>
 #include <vector>
 
@@ -203,18 +204,20 @@ string TranscribeHelper::getLyChordFromHarte(string chord, Vamp::RealTime timest
 
     string result = "";
     // HACK TODO
-//    int duration = getDurationFromTimestamp();
-    int duration = 4;
+
+    vector<string> durations = getLyDurationFromRealtime(timestamp);
+
+    string duration = durations.at(0);
 
     if (chord == "N") {
-        result = "r" + to_string(duration);
+        result = "r" + duration;
         return result;
     }
 
     std::transform(chord.begin(), chord.end(), chord.begin(), ::tolower);
 
     if (chord.length() < 2)
-        return chord + to_string(duration);
+        return chord + duration;
 
     //BASE + DURATION + ifmodifier : modifier + ifbass /bass
 
@@ -263,12 +266,30 @@ string TranscribeHelper::getLyChordFromHarte(string chord, Vamp::RealTime timest
         if (bass != "")
             bass = '/' + bass;
 
-        result =  base+to_string(duration) + modifier + bass;
+        result =  base+duration + modifier + bass;
 
         return result;
 }
 
-vector<string> TranscribeHelper::getLyDurationFromRealtime(Vamp::RealTime rtDuration) {
-    vector<string> result;
-    result.push_back(to_string(4));
+std::vector<std::string> TranscribeHelper::getLyDurationFromRealtime(Vamp::RealTime rtDuration) {
+    std::vector<std::string> result;
+    int bpm = 130;
+
+    float quarterInSeconds = 60./bpm;
+
+    // smallest note 128th
+    int x = 128;
+    float xInSeconds = quarterInSeconds / 5.;
+    while(x >=1) {
+        if (rtDuration.msec()/1000. <= xInSeconds)
+            result.push_back(to_string(x));
+
+        x = x / 2;
+        xInSeconds = xInSeconds * 2;
+    }
+
+    if (result.empty())
+        result.push_back(to_string(4));
+
+    assert(!result.empty());
 }
