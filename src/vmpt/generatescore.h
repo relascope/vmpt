@@ -20,13 +20,17 @@
 #ifndef FILETOSCORE_H
 #define FILETOSCORE_H
 
+#include <vector>
+
 #include <vamp-hostsdk/RealTime.h>
 #include <vamp-hostsdk/Plugin.h>
 
 #include "musicwriter.h"
 
 using Vamp::Plugin;
+using Vamp::RealTime;
 using std::string;
+using std::vector;
 
 // TODO DoJoY Better description
 class GenerateScore
@@ -42,12 +46,14 @@ private:
 	void collectChords(Plugin::FeatureList * features);
     void collectFeatures(Plugin::FeatureList *features);
     void writeNoteToScore(float val, Vamp::RealTime duration, Vamp::RealTime timestamp);
-    void writeChordToScore(string chord, Vamp::RealTime timestamp);
+    void addChordToScore(string chord, Vamp::RealTime timestamp);
+    void writeChords();
     string getLyChordFromHarte(string chord, Vamp::RealTime timestamp);
 
 
     string m_outputScore;
     MusicWriter *m_writer;    
+    std::vector<std::pair<std::string,Vamp::RealTime>> m_chords;
 };
 
 #endif // FILETOSCORE_H

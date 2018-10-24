@@ -38,7 +38,7 @@ void GenerateScore::fromAudio(std::string inputAudio) {
     m_writer->setFile(this->m_outputScore);
     
 
-/*
+
     auto audioReader = AudioReaderFactory::create(inputAudio);
     m_writer->start();      
 
@@ -53,14 +53,17 @@ void GenerateScore::fromAudio(std::string inputAudio) {
     vampHost.process();
 
     m_writer->finish();
-  */
+
     
     
     m_writer->startChord();
+
     auto audioReaderChord = AudioReaderFactory::create(inputAudio);
     RealTimeVampHost vampChordHost("nnls-chroma", "chordino", "simplechord", false, std::map<string,float>{{"usehartesyntax", 1.0}}, *audioReaderChord);
     vampChordHost.featuresAvailable = std::bind(&GenerateScore::collectChords, this, _1);
     vampChordHost.process();
+
+    writeChords();
 
 	m_writer->finishChord();
 
@@ -70,12 +73,12 @@ void GenerateScore::fromAudio(std::string inputAudio) {
 void GenerateScore::collectChords(Plugin::FeatureList * features) {
    for (Plugin::Feature feature : *features)
     {
-		writeChordToScore(feature.label, feature.timestamp);
+        addChordToScore(feature.label, feature.timestamp);
 
         std::cout << std::endl;
         for (float val : feature.values)
         {
-            writeChordToScore(feature.label, feature.timestamp);
+            addChordToScore(feature.label, feature.timestamp);
         }
         if (feature.values.size() > 0)
             std::cout << std::endl;
@@ -104,9 +107,25 @@ GenerateScore::~GenerateScore()
         delete m_writer;
 }
 
-void GenerateScore::writeChordToScore(string chord, Vamp::RealTime timestamp) {
-    string res = TranscribeHelper().getLyChordFromHarte(chord, timestamp);
-    m_writer->write(res);
+void GenerateScore::addChordToScore(string chord, Vamp::RealTime timestamp) {
+    m_chords.push_back(std::make_pair(chord, timestamp));
+}
+
+void GenerateScore::writeChords() {
+    std::pair<string, Vamp::RealTime> oldChord, newChord;
+
+    for (size_t i = 0; i < m_chords.size(); ++i) {
+        oldChord = m_chords[i];
+        if (i+1 == m_chords.size()) {
+            m_writer->write(TranscribeHelper().getLyChordFromHarte(oldChord.first, RealTime::fromSeconds(1)));
+            break;
+        }
+
+        newChord = m_chords[i+1];
+
+        Vamp::RealTime duration = newChord.second - oldChord.second;
+        m_writer->write(TranscribeHelper().getLyChordFromHarte(oldChord.first, duration));
+    }
 }
 
 void GenerateScore::writeNoteToScore(float val, RealTime duration, RealTime timestamp)

@@ -268,3 +268,7 @@ string TranscribeHelper::getLyChordFromHarte(string chord, Vamp::RealTime timest
         return result;
 }
 
+vector<string> TranscribeHelper::getLyDurationFromRealtime(Vamp::RealTime rtDuration) {
+    vector<string> result;
+    result.push_back(to_string(4));
+}

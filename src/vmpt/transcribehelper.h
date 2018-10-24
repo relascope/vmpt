@@ -21,12 +21,11 @@
 #define TRANSCRIBEHELPER_H
 
 #include <string>
-
-
+#include <vector>
 #include <vamp-hostsdk/RealTime.h>
 
 using std::string;
-#include <vamp-hostsdk/RealTime.h>
+using std::vector;
 
 class TranscribeHelper
 {
@@ -40,6 +39,13 @@ public:
     int getOctaveFromFreq(float frequency);
 
     string getLyChordFromHarte(string chord, Vamp::RealTime timestamp);
+
+    /**
+     * @brief getLyDurationFromRealtime
+     * @param rtDuration
+     * @return vector can contain multiple times to be used as slurs
+     */
+    vector<string> getLyDurationFromRealtime(Vamp::RealTime rtDuration);
 
 private:
     std::string getNoteName(int roundedLevel);
