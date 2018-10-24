@@ -206,6 +206,7 @@ string TranscribeHelper::getLyChordFromHarte(string chord, Vamp::RealTime timest
     // HACK TODO
 
     vector<string> durations = getLyDurationFromRealtime(timestamp);
+    assert(!durations.empty());
 
     string duration = durations.at(0);
 
@@ -291,5 +292,5 @@ std::vector<std::string> TranscribeHelper::getLyDurationFromRealtime(Vamp::RealT
     if (result.empty())
         result.push_back(to_string(4));
 
-    assert(!result.empty());
+    return result;
 }

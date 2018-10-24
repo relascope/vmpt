@@ -117,7 +117,7 @@ void GenerateScore::writeChords() {
     for (size_t i = 0; i < m_chords.size(); ++i) {
         oldChord = m_chords[i];
         if (i+1 == m_chords.size()) {
-            m_writer->write(TranscribeHelper::Instance().getLyChordFromHarte(""+oldChord.first, RealTime::fromSeconds(1)));
+            //m_writer->write(TranscribeHelper::Instance().getLyChordFromHarte(""+oldChord.first, RealTime::fromSeconds(1)));
             break;
         }
 
