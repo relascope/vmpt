@@ -4,6 +4,23 @@ VMPT PeNny notates music notes from an audio file.
 The file can be saved and viewed in common Notation Programs. 
 Most Audio Files are supported. 
 
+Highly recommended
+==================
+Sonic Visualizer and e.g. piYIN transformation can export the annotation layer to a MIDI file. 
+
+piYIN, MELODIA or cepstral-pitchtracker get good results of monophonic audio. 
+nnls-chroma and chordino can get the chords for you. 
+Polyphonic music may be translated by melodia. 
+
+If you just need the notes for the vocals, we recommend using Spleeter (https://github.com/deezer/spleeter) to extract the vocals first. 
+
+UNMAINTAINED
+============
+VMPT project is not maintained right now. We had to move away from the MusicXML-lib since it was unavailable and the migration to Lilypond was not finished. 
+When developing the project, Sonic-Visualiser could not export MIDI-Files
+
+
+
 Features
 ================================================
  * Console UI
